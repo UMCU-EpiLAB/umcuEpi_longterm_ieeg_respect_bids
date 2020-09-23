@@ -81,7 +81,7 @@ try
     
     %% ---------- INCLUDED ----------
     included_idx=cellfun(@(x) contains(x,{'Included'}),annots(:,2));
-    metadata.ch2use_included= false(size(ch));
+    
     if (sum(included_idx))
         metadata.ch2use_included=single_annotation(annots,'Included',ch);
         fprintf('File had Included-annotation\n')
@@ -186,7 +186,6 @@ try
     
     %% Look for silicon
     silicon_idx=cellfun(@(x) contains(x,{'Silicon'}),annots(:,2));
-    metadata.ch2use_silicon= false(size(ch));
     if(sum(silicon_idx))
         metadata.ch2use_silicon=single_annotation(annots,'Silicon',ch);
     elseif metadata.incl_exist == 0
@@ -195,7 +194,6 @@ try
     
     %% look for resected channels
     resected_idx = cellfun(@(x) contains(x,{'RA'}),annots(:,2));
-    metadata.ch2use_resected= false(size(ch));
     if(sum(resected_idx))
         metadata.ch2use_resected=single_annotation(annots,'RA',ch);
     elseif metadata.incl_exist == 0
@@ -204,7 +202,6 @@ try
     
     %% look for edge channels
     edge_idx = cellfun(@(x) contains(x,{'Edge'}),annots(:,2));
-    metadata.ch2use_edge= false(size(ch));
     if(sum(edge_idx))
         metadata.ch2use_edge=single_annotation(annots,'Edge',ch);
     elseif metadata.incl_exist == 0
@@ -213,7 +210,6 @@ try
     
     %% look for SOZ channels
     soz_idx = cellfun(@(x) contains(x,{'SOZ'}),annots(:,2));
-    metadata.ch2use_soz= false(size(ch));
     if(sum(soz_idx))
         metadata.ch2use_soz=single_annotation(annots,'SOZ',ch);
     elseif metadata.incl_exist == 0
@@ -225,7 +221,6 @@ try
         
         % look for screw channels - only in seeg
         screw_idx = cellfun(@(x) contains(x,{'Screw'}),annots(:,2));
-        metadata.ch2use_screw= false(size(ch));
         if(sum(screw_idx))
             metadata.ch2use_screw=single_annotation(annots,'Screw',ch);
         elseif metadata.incl_exist == 0
@@ -234,7 +229,6 @@ try
         
         % look for white matter channels - only in seeg
         wm_idx = cellfun(@(x) contains(x,{'WM'}),annots(:,2));
-        metadata.ch2use_wm= false(size(ch));
         if(sum(wm_idx))
             metadata.ch2use_wm=single_annotation(annots,'WM',ch);
         elseif metadata.incl_exist == 0
@@ -243,7 +237,6 @@ try
         
         % look for gray matter channels - only in seeg
         gm_idx = cellfun(@(x) contains(x,{'GM'}),annots(:,2));
-        metadata.ch2use_gm= false(size(ch));
         if(sum(gm_idx))
             metadata.ch2use_gm=single_annotation(annots,'GM',ch);
         elseif metadata.incl_exist == 0
@@ -252,7 +245,6 @@ try
         
         % look for CSF channels - only in seeg
         csf_idx = cellfun(@(x) contains(x,{'CSF'}),annots(:,2));
-        metadata.ch2use_csf= false(size(ch));
         if(sum(csf_idx))
             metadata.ch2use_csf=single_annotation(annots,'CSF',ch);
         elseif metadata.incl_exist == 0
@@ -261,7 +253,6 @@ try
         
         % look for amygdala channels - only in seeg
         amyg_idx = cellfun(@(x) contains(x,{'Amyg'}),annots(:,2));
-        metadata.ch2use_amyg= false(size(ch));
         if(sum(amyg_idx))
             metadata.ch2use_amyg=single_annotation(annots,'Amyg',ch);
         elseif metadata.incl_exist == 0
@@ -270,7 +261,6 @@ try
         
         % look for hippocampal channels - only in seeg
         hipp_idx = cellfun(@(x) contains(x,{'Hipp'}),annots(:,2));
-        metadata.ch2use_hipp= false(size(ch));
         if(sum(hipp_idx))
             metadata.ch2use_hipp=single_annotation(annots,'Hipp',ch);
         elseif metadata.incl_exist == 0
@@ -279,7 +269,6 @@ try
         
         % look for lesion channels - only in seeg
         lesion_idx = cellfun(@(x) contains(x,{'Lesion'}),annots(:,2));
-        metadata.ch2use_lesion= false(size(ch));
         if(sum(lesion_idx))
             metadata.ch2use_lesion=single_annotation(annots,'Lesion',ch);
         elseif metadata.incl_exist == 0
@@ -288,7 +277,6 @@ try
         
         % look for gliosis channels - only in seeg
         gliosis_idx = cellfun(@(x) contains(x,{'Glio'}),annots(:,2));
-        metadata.ch2use_gliosis= false(size(ch));
         if(sum(gliosis_idx))
             metadata.ch2use_lesion=single_annotation(annots,'Glio',ch);
         elseif metadata.incl_exist == 0
