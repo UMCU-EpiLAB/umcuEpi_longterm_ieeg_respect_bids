@@ -67,7 +67,7 @@ for i=1:size(cfg,2)
         % extract RESPect numbers from RESPect names
         numname = zeros(size(participant_id));
         for n=1:size(participant_id,1)
-            numname(n) = str2double(participant_id{n}(5:end));
+            numname(n) = str2double(participant_id{n}(regexp(participant_id{n},'[0-9]')));
         end
         
         % sorts table based on RESPect number and session number
