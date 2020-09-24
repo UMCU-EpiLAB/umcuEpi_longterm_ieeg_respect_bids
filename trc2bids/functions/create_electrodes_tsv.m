@@ -136,8 +136,14 @@ if ~isempty(electrodes_tsv)
                 if any(contains(fieldnames(cc_elec_old),'Destrieux'))    
                    electrodes_tsv.Destrieux_label       = cc_elec_old.Destrieux_label;
                    electrodes_tsv.Destrieux_label_text  = cc_elec_old.Destrieux_label_text;
-                   electrodes_tsv.DKTatlas_label        = cc_elec_old.DKTatlas_label;
-                   electrodes_tsv.DKTatlas_label_text   = cc_elec_old.DKTatlas_label_text;
+                   
+                   if contains(fieldnames(cc_elec_old),'DKTatlas_label') % this is the old naming, inconsistent with electrodes.json
+                       electrodes_tsv.DKT_label             = cc_elec_old.DKTatlas_label;
+                       electrodes_tsv.DKT_label_text        = cc_elec_old.DKTatlas_label_text;
+                   elseif contains(fieldnames(cc_elec_old),'DK_label')
+                       electrodes_tsv.DKT_label             = cc_elec_old.DKT_label;
+                       electrodes_tsv.DKT_label_text        = cc_elec_old.DKT_label_text;
+                   end
                    electrodes_tsv.Wang_label            = cc_elec_old.Wang_label;
                    electrodes_tsv.Wang_label_text       = cc_elec_old.Wang_label_text;
                    electrodes_tsv.Benson_label          = cc_elec_old.Benson_label;

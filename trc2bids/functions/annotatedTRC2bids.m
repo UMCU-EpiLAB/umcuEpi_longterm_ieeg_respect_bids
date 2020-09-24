@@ -171,12 +171,12 @@ try
         %% write event descriptor
         
         for i=1:size(proj_diroutput,2)
-            create_eventDesc(proj_diroutput{i})
+            create_eventDesc(proj_diroutput{i},sub_label,ses_label)
         end
         
         %% write scans descriptor
         for i=1:size(proj_diroutput,2)
-            create_scansDesc(proj_diroutput{i})
+            create_scansDesc(proj_diroutput{i},sub_label,ses_label)
         end
         
         %% write participants descriptor

@@ -156,7 +156,6 @@ try
                 if size(C,2) >2
                     warning('Annotation in "Hemisphere" might be incorrect')
                 end
-                
             else
                 metadata = look_for_hemisphere(metadata,hemisphere_idx,annots);
             end
@@ -165,8 +164,6 @@ try
             metadata = look_for_hemisphere(metadata,hemisphere_idx,annots);
             
         end
-        
-        
     end
     
     %% Look for bad channels
@@ -188,6 +185,8 @@ try
     silicon_idx=cellfun(@(x) contains(x,{'Silicon'}),annots(:,2));
     if(sum(silicon_idx))
         metadata.ch2use_silicon=single_annotation(annots,'Silicon',ch);
+    elseif metadata.incl_exist == 1 && (sum(silicon_idx)) == 0 % if included etc is annotated but silicon is not part of it
+        metadata.ch2use_silicon = false(size(ch));
     elseif metadata.incl_exist == 0
         % done in load_chanInfo
     end
@@ -196,6 +195,8 @@ try
     resected_idx = cellfun(@(x) contains(x,{'RA'}),annots(:,2));
     if(sum(resected_idx))
         metadata.ch2use_resected=single_annotation(annots,'RA',ch);
+    elseif metadata.incl_exist == 1 && (sum(resected_idx)) == 0  % if included etc is annotated but resected is not part of it
+        metadata.ch2use_resected = false(size(ch));    
     elseif metadata.incl_exist == 0
         % done in load_chanInfo
     end
@@ -204,6 +205,8 @@ try
     edge_idx = cellfun(@(x) contains(x,{'Edge'}),annots(:,2));
     if(sum(edge_idx))
         metadata.ch2use_edge=single_annotation(annots,'Edge',ch);
+    elseif metadata.incl_exist == 1 && (sum(edge_idx)) == 0 % if included etc is annotated but edge is not part of it
+        metadata.ch2use_edge = false(size(ch));
     elseif metadata.incl_exist == 0
         % done in load_chanInfo
     end
@@ -212,6 +215,8 @@ try
     soz_idx = cellfun(@(x) contains(x,{'SOZ'}),annots(:,2));
     if(sum(soz_idx))
         metadata.ch2use_soz=single_annotation(annots,'SOZ',ch);
+    elseif metadata.incl_exist == 1 && (sum(soz_idx)) == 0 % if included etc is annotated but soz is not part of it
+        metadata.ch2use_soz = false(size(ch));
     elseif metadata.incl_exist == 0
         % done in load_chanInfo
     end
@@ -223,6 +228,8 @@ try
         screw_idx = cellfun(@(x) contains(x,{'Screw'}),annots(:,2));
         if(sum(screw_idx))
             metadata.ch2use_screw=single_annotation(annots,'Screw',ch);
+        elseif metadata.incl_exist == 1 && (sum(screw_idx)) == 0 % if included etc is annotated but screw is not part of it
+            metadata.ch2use_screw = false(size(ch));
         elseif metadata.incl_exist == 0
             % done in load_chanInfo
         end
@@ -231,14 +238,18 @@ try
         wm_idx = cellfun(@(x) contains(x,{'WM'}),annots(:,2));
         if(sum(wm_idx))
             metadata.ch2use_wm=single_annotation(annots,'WM',ch);
+        elseif metadata.incl_exist == 1 && (sum(wm_idx)) == 0 % if included etc is annotated but wm is not part of it
+            metadata.ch2use_wm = false(size(ch));
         elseif metadata.incl_exist == 0
             % done in load_chanInfo
         end
         
         % look for gray matter channels - only in seeg
         gm_idx = cellfun(@(x) contains(x,{'GM'}),annots(:,2));
-        if(sum(gm_idx))
+        if (sum(gm_idx))
             metadata.ch2use_gm=single_annotation(annots,'GM',ch);
+        elseif metadata.incl_exist == 1 && (sum(gm_idx)) == 0 % if included etc is annotated but gm is not part of it
+            metadata.ch2use_gm = false(size(ch));
         elseif metadata.incl_exist == 0
             % done in load_chanInfo
         end
@@ -247,6 +258,8 @@ try
         csf_idx = cellfun(@(x) contains(x,{'CSF'}),annots(:,2));
         if(sum(csf_idx))
             metadata.ch2use_csf=single_annotation(annots,'CSF',ch);
+        elseif metadata.incl_exist == 1 && (sum(csf_idx)) == 0 % if included etc is annotated but csf is not part of it
+            metadata.ch2use_csf = false(size(ch));
         elseif metadata.incl_exist == 0
             % done in load_chanInfo
         end
@@ -255,6 +268,8 @@ try
         amyg_idx = cellfun(@(x) contains(x,{'Amyg'}),annots(:,2));
         if(sum(amyg_idx))
             metadata.ch2use_amyg=single_annotation(annots,'Amyg',ch);
+        elseif metadata.incl_exist == 1 && (sum(amyg_idx)) == 0 % if included etc is annotated but amyg is not part of it
+            metadata.ch2use_amyg = false(size(ch));
         elseif metadata.incl_exist == 0
             % done in load_chanInfo
         end
@@ -263,6 +278,8 @@ try
         hipp_idx = cellfun(@(x) contains(x,{'Hipp'}),annots(:,2));
         if(sum(hipp_idx))
             metadata.ch2use_hipp=single_annotation(annots,'Hipp',ch);
+        elseif metadata.incl_exist == 1 && (sum(hipp_idx)) == 0 % if included etc is annotated but hipp is not part of it
+            metadata.ch2use_hipp = false(size(ch));
         elseif metadata.incl_exist == 0
             % done in load_chanInfo
         end
@@ -271,14 +288,18 @@ try
         lesion_idx = cellfun(@(x) contains(x,{'Lesion'}),annots(:,2));
         if(sum(lesion_idx))
             metadata.ch2use_lesion=single_annotation(annots,'Lesion',ch);
-        elseif metadata.incl_exist == 0
+         elseif metadata.incl_exist == 1 && (sum(lesion_idx)) == 0 % if included etc is annotated but lesion is not part of it
+            metadata.ch2use_lesion = false(size(ch));
+       elseif metadata.incl_exist == 0
             % done in load_chanInfo
         end
         
         % look for gliosis channels - only in seeg
         gliosis_idx = cellfun(@(x) contains(x,{'Glio'}),annots(:,2));
-        if(sum(gliosis_idx))
-            metadata.ch2use_lesion=single_annotation(annots,'Glio',ch);
+        if (sum(gliosis_idx))
+            metadata.ch2use_gliosis=single_annotation(annots,'Glio',ch);
+        elseif metadata.incl_exist == 1 && (sum(gliosis_idx)) == 0 % if included etc is annotated but gliosis is not part of it
+            metadata.ch2use_gliosis = false(size(ch));
         elseif metadata.incl_exist == 0
             % done in load_chanInfo
         end

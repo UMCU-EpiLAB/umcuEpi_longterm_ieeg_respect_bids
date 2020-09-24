@@ -1,5 +1,5 @@
 %% create scan descriptor
-function create_scansDesc(proj_dir)
+function create_scansDesc(proj_dir,sub_label,ses_label)
 
 scansdesc_json.filename                 = 'name of the file' ;
 scansdesc_json.acq_time                 = 'acquisition time';
@@ -26,6 +26,6 @@ scansdesc_json.EI_sel                   = 'selection of 15 seconds around seizur
 
 if ~isempty(scansdesc_json)
     
-    filename = fullfile(proj_dir,'scans.json');
+    filename = fullfile(proj_dir,sub_label,ses_label,[sub_label,'_',ses_label,'_scans.json']);
     write_json(filename, scansdesc_json)
 end
