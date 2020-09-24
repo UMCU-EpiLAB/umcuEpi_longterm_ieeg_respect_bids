@@ -44,7 +44,7 @@ end
 
 elecdesc_json.Destrieux_label       = 'Electrode location in a region according to Destrieux et al. NeuroImage2011';
 elecdesc_json.Destrieux_label_text  = ['Electrode location in a region according to Destrieux et al. NeuroImage2011: ',[strings_destrieux{:}]];
-elecdesc_json.DKT_label             = 'Electrode location in a region according to Klein & Tourville Front. Neuroscience 2012';
+elecdesc_json.DKT_label        = 'Electrode location in a region according to Klein & Tourville Front. Neuroscience 2012';
 elecdesc_json.DKT_label_text        = ['Electrode location in a region according to Klein & Tourville Front. Neuroscience 2012: ',[strings_DKT{:}]];
 elecdesc_json.Wang_label            = 'Electrode location in a visual cortex region according to Wang';
 elecdesc_json.Wang_label_text       = 'Electrode location in a visual cortex region according to Wang';
@@ -56,25 +56,8 @@ elecdesc_json.Benson_sigma          = 'Electrode location in a visual cortex reg
 
 if ~isempty(elecdesc_json)
     
-    filename = fullfile(proj_dir,'electrodes.json');
-    if isfile(filename)
-        existing = read_json(filename);
-    else
-        existing = [];
-    end
-    write_json(filename, mergeconfig(existing, elecdesc_json))
-end
-end
-
-function json = read_json(filename)
-ft_info('reading %s\n', filename);
-if ft_hastoolbox('jsonlab', 3)
-    json = loadjson(filename);
-else
-    fid = fopen(filename, 'r');
-    str = fread(fid, [1 inf], 'char=>char');
-    fclose(fid);
-    json = jsondecode(str);
+    filename = fullfile(proj_dir,cfg.sub_labels{:},cfg.ses_label,'ieeg',[cfg.sub_labels{:},'_',cfg.ses_label,'_electrodes.json']);
+    write_json(filename, elecdesc_json)
 end
 end
 
