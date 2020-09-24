@@ -35,6 +35,9 @@ for i=1:size(cfg.hemisphere,2)
     % loc_info = readtable(electrodes_tsv,'FileType','text','Delimiter','\t','TreatAsEmpty',{'N/A','n/a'});
     % elecmatrix = [loc_info.x loc_info.y loc_info.z];
     elecmatrix = [tb_elecs.x tb_elecs.y tb_elecs.z];
+    if iscell(tb_elecs.x)
+       elecmatrix = str2double(elecmatrix) ;        
+    end
     
     %%%% LOAD SURFACE LABELS FOR ALL THE MAPS
     
@@ -143,8 +146,8 @@ for i=1:size(cfg.hemisphere,2)
     end
     
     %%% DEFINE THE OUTPUT
-    DKTatlas_label = NaN(size(elecmatrix,1),1);
-    DKTatlas_label_text = cell(size(elecmatrix,1),1);
+    DKT_label = NaN(size(elecmatrix,1),1);
+    DKT_label_text = cell(size(elecmatrix,1),1);
     Destrieux_label = NaN(size(elecmatrix,1),1);
     Destrieux_label_text = cell(size(elecmatrix,1),1);
     Wang_label = NaN(size(elecmatrix,1),1);
@@ -206,13 +209,13 @@ for elec = 1:size(elecmatrix,1) % loop across electrodes
     % put the labels (vert_label) back in the matrix
     if localized_electrodes~=0 && ~isnan(localized_electrodes)
         
-        DKTatlas_label(elec,1) =  localized_electrodes;
+        DKT_label(elec,1) =  localized_electrodes;
         loc_DKTname = [DKT_labels{:,2}]==localized_electrodes;        
-        DKTatlas_label_text{elec,1} = DKT_labels{loc_DKTname,1};
+        DKT_label_text{elec,1} = DKT_labels{loc_DKTname,1};
         
     else
-        DKTatlas_label(elec,1) =  NaN;
-        DKTatlas_label_text{elec,1} = 'n/a';
+        DKT_label(elec,1) =  NaN;
+        DKT_label_text{elec,1} = 'n/a';
     end
     
     %%%% WANG:
@@ -275,7 +278,7 @@ end
 % Make a new table with added variables
 t = table(...
     Destrieux_label, Destrieux_label_text,...
-    DKTatlas_label,DKTatlas_label_text,...
+    DKT_label,DKT_label_text,...
     Wang_label, Wang_label_text,...
     Benson_label,Benson_label_text, Benson_eccen,...
     Benson_polarangle, Benson_sigma);
