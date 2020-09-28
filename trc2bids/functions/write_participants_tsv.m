@@ -42,26 +42,38 @@ for i=1:size(cfg,2)
         
         if strcmpi(metadata.gender,'male') || strcmpi(metadata.gender,'female')
             sex{partnum,1} = metadata.gender;
+        elseif strcmp(metadata.gender, 'unknown') && size(sex,1) < partnum
+            sex{partnum,1} = metadata.gender;
         end
         
         % set age of RESPect patient (comparing with current participants-table)
         if pat_exist == 1
-            if age(partnum,1) == header.age && age(partnum,1) ~= 0 % if age in participants.tsv is not equal to 0  and equal to header.age
+            if any(contains(fieldnames(metadata),'age')) 
+                age(partnum,1) = str2double(metadata.age);
+                
+            elseif age(partnum,1) == header.age && age(partnum,1) ~= 0 % if age in participants.tsv is not equal to 0  and equal to header.age
                 age(partnum,1)    = header.age;
+                
             elseif age(partnum,1) ~= 0 && header.age == 0 % if age is not equal to 0 (assumed to be correct)
                 
             elseif age(partnum,1) == 0 && header.age ~= 0 % if age is equal to 0 and header.age is not (latter is assumed to be correct)
                 age(partnum,1) = header.age;
-            elseif age(partnum,1) ~= 0 && header.age ~= 0 && age(partnum,1) ~= header.age % if both ages are not 0 and conflicting, keep current age
+                
+            elseif age(partnum,1) ~= 0 && header.age ~= 0 && age(partnum,1) ~= header.age % if both ages are not 0 and conflicting, keep current age, because that might have been annotated in the trc file with Included, Format annotations
                 warning('ages between this file and other file are in conflict!')
+                
             elseif age(partnum,1) == 0 && header.age == 0
                 warning('age is 0 years... assumed to be incorrect!')
             end
         else
-            if header.age == 0
-                warning('age is 0 years... assumed to be incorrect!')
+            if any(contains(fieldnames(metadata),'age'))
+                age(partnum,1) = str2double(metadata.age);
+            elseif header.age == 0
+                warning('age is 0 years... assumed to be incorrect! Annotate "Age;X" in a trc file!!')
+                age(partnum,1) = header.age;
+            else 
+                age(partnum,1) = header.age;
             end
-            age(partnum,1) = header.age;
         end
         
         % extract RESPect numbers from RESPect names

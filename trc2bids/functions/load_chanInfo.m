@@ -2,7 +2,7 @@ function metadata = load_chanInfo(cfg,metadata,files)
 
 ch = metadata.ch;
 
-fprintf('%s/%s/ses-%s/ieeg/%s_ses-%s_electrodes.tsv is used.\n',cfg(2).proj_dirinput,metadata.sub_label,metadata.ses_name,metadata.sub_label,metadata.ses_name)
+fprintf('%s%s/ses-%s/ieeg/%s_ses-%s_electrodes.tsv is used.\n',cfg(2).proj_dirinput,metadata.sub_label,metadata.ses_name,metadata.sub_label,metadata.ses_name)
 elecName = fullfile(files(1).folder, '/',files(1).name);
 cc_elecs = readtable(elecName,'FileType','text','Delimiter','\t');
 

@@ -32,29 +32,35 @@ if(~isempty(event))
             eventsannots.notes{cc,1} = 'n/a';
         end
         
+        clear name 
         if size(event{i}.ch_names_on,2) == 1
             name = event{i}.ch_names_on{1}              ;
-        else
+        elseif size(event{i}.ch_names_on,2) > 1
             for j=1
                 name =[event{i}.ch_names_on{1}];
             end
             
             for j=2:size(event{i}.ch_names_on,2)
-                name = [name ,',', event{i}.ch_names_on{j}];
+                name = [name ,',', event{i}.ch_names_on{j}]; %#ok<AGROW>
             end
+        else % if size < 1, this is wrong!
+            error('Number of channels in seizure onset is annotated incorrectly!')
         end
         eventsannots.ch_name_on{cc,1} = name;
         
+        clear name
         if size(event{i}.ch_names_off,2) == 1
             name = event{i}.ch_names_off{1}              ;
-        else
+        elseif size(event{i}.ch_names_off,2) > 1
             for j=1
                 name =[event{i}.ch_names_off{1}];
             end
             
             for j=2:size(event{i}.ch_names_off,2)
-                name = [name ,',', event{i}.ch_names_off{j}];
+                name = [name ,',', event{i}.ch_names_off{j}]; %#ok<AGROW>
             end
+        else % if size <1, this is wrong!
+            error('Number of channels in seizure offset is annotated incorrectly!')
         end
         
         eventsannots.ch_name_off{cc,1} = name;

@@ -166,6 +166,14 @@ try
         end
     end
     
+    %% AGE
+    age_idx = cellfun(@(x) contains(x,{'Age'}),annots(:,2));
+    if sum(age_idx)
+       str2parse = annots{age_idx,2}; 
+       C = strsplit(str2parse,{'; ',';'});
+       metadata.age = C{2};
+    end
+        
     %% Look for bad channels
     metadata.ch2use_bad=single_annotation(annots,'Bad;',ch); % without the semicolon, the bad_HF channels are also included in Bad
     
