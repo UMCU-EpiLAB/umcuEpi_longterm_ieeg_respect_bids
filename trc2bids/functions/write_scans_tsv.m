@@ -6,7 +6,7 @@ for j=1:size(cfg(1).ses_dir,2)
     file_name = fullfile(cfg(1).ses_dir{j},fscans_name);
     
     files = dir(cfg(1).ses_dir{j});
-    if contains([files(:).name],'scans')
+    if contains([files(:).name],'scans.tsv')
         
         % read existing scans-file
         scans_tsv = read_tsv(file_name);
