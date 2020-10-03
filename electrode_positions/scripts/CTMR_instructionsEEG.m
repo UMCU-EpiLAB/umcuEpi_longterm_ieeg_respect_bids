@@ -375,6 +375,7 @@ cfg(1).elec_offset = 'yes';
 % cfg(1).atlas = 'Destrieux'; % [DKT/Destrieux]
 cfg(1).atlas = 'DKT'; % [DKT/Destrieux]
 cfg(1).view_elec ='yes';
+cfg(1).save_fig = 'no';
 
 check_atlas_elec_MRI(cfg(1),tb_elecs_atlases)
 

@@ -14,7 +14,30 @@ else
 end
 
 % pick a viewing angle:
-v_dirs = [90 0; 270 0]; %[90 0;90 -60;270 -60;0 0;270 0; 270 60]; %zij, onder, .., voor, zij, zijboven
+v_dirs = [0,0;... % back
+    -45,0;... % back_left
+    45,0;... % back_right
+    -90,-90;... % bottom
+    0,-45;... % bottom_back
+    180,-45;... % bottom_front
+    -90,-45;... % bottom_left
+    90,-45;... % bottom_right
+    180,0;... %front
+    -135,0;... % front_left
+    135,0;... % front_right
+    -90,0;... %left
+    90,0;... % right
+    -90,90;... % top
+    0,45;... % top_back
+    180,45;...% top_front
+    -90,45;... %top_left
+    90,45]; % top_right
+
+fig_pos = {'back','back_left','back_right',...
+    'bottom','bottom_back','bottom_front','bottom_left','bottom_right',...
+    'front','front_left','front_right',...
+    'left','right',...
+    'top','top_back','top_front','top_left','top_right'};
 
 for i=1:size(cfg.hemisphere,2)
     
@@ -64,7 +87,7 @@ end
 for k = 1:size(v_dirs,1) % loop across viewing angles
     v_d = v_dirs(k,:);
     
-    figure('units','normalized','position',[0.01 0.01 0.9 0.9],'color',[1 1 1]);
+    figure('Name',fig_pos{k},'units','normalized','position',[0.01 0.01 0.9 0.9],'color',[1 1 1]);
     
     subplot('position', [0.05 0.25 0.9 0.7])
     
@@ -96,15 +119,27 @@ for k = 1:size(v_dirs,1) % loop across viewing angles
         
         % add electrode numbers
         if strcmp(cfg.show_labels,'yes')
-            ecog_Label(els,tb_elecs.name,30,12) % [electrodes, electrode labels, MarkerSize, FontSize]
+            ecog_Label(els,tb_elecs.name,50,12) % [electrodes, electrode labels, MarkerSize, FontSize]
             
             % add all electrodes with black dots
-            ccep_el_add(els,[0.1 0.1 0.1],20) % [electrodes, MarkerColor, MarkerSize]
+            if strcmp(cfg(1).view_atlas,'yes')
+                ccep_el_add(els,[0.1 0.1 0.1],40) % [electrodes, MarkerColor, MarkerSize]
+            else
+                % add electrodes with yelllow dots
+                ccep_el_add(els,[1 1 0],40) % [electrodes, MarkerColor, MarkerSize]
+                
+            end
         end
     end
     
     set(gcf,'PaperPositionMode','auto')
     
-    
+    if strcmp(cfg.save_fig, 'yes')
+        if ~exist(fullfile(cfg(1).deriv_directory,'rendering'),'dir')
+           mkdir( fullfile(cfg(1).deriv_directory,'rendering'))
+        end
+        
+        saveas(gcf,fullfile(cfg(1).deriv_directory,'rendering',[fig_pos{k},'.png']))
+    end
 end
 end
