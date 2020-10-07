@@ -450,7 +450,7 @@ if~isempty(cfg(2).proj_diroutput)
     % 5. write T1w.json accompanying the .nii file
     
     mri_name = [cfg(1).anat_directory, cfg(1).sub_labels{:},'_',cfg(1).ses_label,'_rec-deface_T1w.nii'];
-    create_json_mri(replace(mri_name,'nii','json'))   
+    create_json_mri(replace(mri_name,'nii','json'))
     
     % 6. create electrodes descriptor
     
