@@ -1,6 +1,11 @@
 function cfg = personalDataPath_bidsconvert_example(varargin)
 
 % function that contains local data path, is ignored in .gitignore
+% This function is an example!! You should make your own
+% personalDataPath_bidsconvert.m where you fill in the correct
+% repositories.
+% This personalDataPath_bidsconvert.m is ignored in .gitignore and will
+% never be visible online! 
 
 if ~isempty(varargin{1})
     if isstruct(varargin{1})
@@ -23,7 +28,7 @@ if ~isempty(varargin{1})
             
             cfg(2).proj_dirinput = '/folder/to/ieeg-files/chronic_ECoG/';
             cfg(1).proj_diroutput = '/folder/to/BIDS-files/chronic_ECoG/';
-            cfg(2).proj_diroutput = '/folder/to/BIDS-files//CCEP/'; % optional: this could remain empty
+            cfg(2).proj_diroutput = '/folder/to/BIDS-files/CCEP/'; % optional: this could remain empty
             
         elseif contains(varargin{1}.sub_labels,'REC2Stim')            % REC2Stim
 
