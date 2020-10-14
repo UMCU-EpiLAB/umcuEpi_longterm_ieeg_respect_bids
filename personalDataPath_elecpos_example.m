@@ -1,13 +1,18 @@
 function cfg = personalDataPath_elecpos_example(varargin)
 
 % function that contains local data path, is ignored in .gitignore
+% This function is an example!! You should make your own
+% personalDataPath_elecpos.m where you fill in the correct
+% repositories.
+% This personalDataPath_elecpos.m is ignored in .gitignore and will
+% never be visible online! 
 
 if ~isempty(varargin{1})
     if isstruct(varargin{1})
         
         if sum(contains(fieldnames(varargin{1}),'sub_labels'))
             if contains(varargin{1}.sub_labels,'RESP')
-                cfg(1).proj_dirinput = '/folder/to/bids-files/CCEP/';
+                cfg(1).proj_dirinput = '/folder/to/ieeg-files/CCEP/patients';
                 cfg(2).proj_dirinput = '/folder/to/bids-files/chronic_ECoG/';
                 cfg(1).proj_diroutput = '/folder/to/bids-files/CCEP/';
                 cfg(2).proj_diroutput = '/folder/to/bids-files/chronic_ECoG/'; % optional: this could remain empty
@@ -54,11 +59,11 @@ if ~isempty(varargin{1})
                 cfg(1).hemisphere{i} = lower(hemisphere{i}); %input('Hemisphere with implanted electrodes [l/r]: ','s');
             end
             
-            cfg(1).freesurfer_directory = sprintf('%sderivatives/freesurfer/%s/%s/',cfg(1).proj_diroutput,cfg(1).sub_labels{:},cfg(1).ses_label,mri);
+            cfg(1).freesurfer_directory = sprintf('%sderivatives/freesurfer/%s/%s/%s_%s_%s/',cfg(1).proj_diroutput,cfg(1).sub_labels{:},cfg(1).ses_label,cfg(1).sub_labels{:},cfg(1).ses_label,mri);
             cfg(1).anat_directory = sprintf('%s%s/%s/anat/',cfg(1).proj_diroutput,cfg(1).sub_labels{:},cfg(1).ses_label);
-            cfg(1).deriv_directory = sprintf('%sderivatives/elecPosition/%s/%s/',cfg(1).proj_diroutput,cfg(1).sub_labels{:},cfg(1).ses_label
+            cfg(1).deriv_directory = sprintf('%sderivatives/elecPosition/%s/%s/',cfg(1).proj_diroutput,cfg(1).sub_labels{:},cfg(1).ses_label);
             cfg(1).ieeg_directory = sprintf('%s%s/%s/ieeg/',cfg(1).proj_diroutput,cfg(1).sub_labels{:},cfg(1).ses_label);
-            cfg(1).surface_directory = sprintf('%sderivatives/surfaces/%s/%s/',cfg(1).proj_diroutput,cfg(1).sub_labels{:},cfg(1).ses_label,mri);
+            cfg(1).surface_directory = sprintf('%sderivatives/surfaces/%s/%s/%s_%s_%s/',cfg(1).proj_diroutput,cfg(1).sub_labels{:},cfg(1).ses_label,cfg(1).sub_labels{:},cfg(1).ses_label,mri);
             cfg(1).elec_input = sprintf('%s%s/%s/ieeg/',cfg(1).proj_diroutput,cfg(1).sub_labels{:},cfg(1).ses_label);
             cfg(1).path_talairach = '/folder/to/talairach_mixed_with_skull.gca';
             cfg(1).path_face = '/folder/to/face.gca';

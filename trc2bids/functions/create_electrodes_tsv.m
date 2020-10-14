@@ -140,7 +140,7 @@ if ~isempty(electrodes_tsv)
                    if contains(fieldnames(cc_elec_old),'DKTatlas_label') % this is the old naming, inconsistent with electrodes.json
                        electrodes_tsv.DKT_label             = cc_elec_old.DKTatlas_label;
                        electrodes_tsv.DKT_label_text        = cc_elec_old.DKTatlas_label_text;
-                   elseif contains(fieldnames(cc_elec_old),'DK_label')
+                   elseif contains(fieldnames(cc_elec_old),'DKT_label')
                        electrodes_tsv.DKT_label             = cc_elec_old.DKT_label;
                        electrodes_tsv.DKT_label_text        = cc_elec_old.DKT_label_text;
                    end

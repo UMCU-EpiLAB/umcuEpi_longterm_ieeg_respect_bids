@@ -118,6 +118,11 @@ clc
 fprintf('\n ----- OPEN %smri ----- \n ----- CLICK WITH RIGHT MOUSE AND OPEN LINUX TERMINAL ----- \n ----- RUN LINE BELOW IN LINUX TERMINAL ----- \nmri_convert ribbon.mgz t1_class.nii\n',cfg(1).freesurfer_directory)
 
 %% STEP 6: Create the hull - matlab
+if ~exist(cfg(1).deriv_directory,'dir')
+    mkdir(cfg(1).deriv_directory)
+    
+end
+
 for i=1:size(cfg(1).hemisphere,2)
     settings_hull = [13,... % setting for smoothing: default 13
         0.3]; % setting for threshold: default 0.3
@@ -288,7 +293,7 @@ tb_elecs.z = elecmatrix_shift(:,3);
 
 %% STEP 11: save electrode positions, corrected for brain shift to electrodes.tsv - matlab
 
-saveFile = sprintf('%s%s_%s_electrodes.tsv',cfg(1).elec_input,cfg(1).sub_labels{:},cfg(1).ses_label);
+saveFile = sprintf('%s%s_%s_electrodesPositioned.tsv',cfg(1).deriv_directory,cfg(1).sub_labels{:},cfg(1).ses_label);
 writetable(tb_elecs, saveFile, 'Delimiter', 'tab', 'FileType', 'text');
 fprintf('Electrode positions, corrected for brainshift, are saved in %s\n',saveFile)
 
@@ -450,7 +455,7 @@ if~isempty(cfg(2).proj_diroutput)
     % 5. write T1w.json accompanying the .nii file
     
     mri_name = [cfg(1).anat_directory, cfg(1).sub_labels{:},'_',cfg(1).ses_label,'_rec-deface_T1w.nii'];
-    create_json_mri(replace(mri_name,'nii','json'))   
+    create_json_mri(replace(mri_name,'nii','json'))
     
     % 6. create electrodes descriptor
     
