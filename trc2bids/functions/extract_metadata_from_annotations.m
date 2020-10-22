@@ -356,7 +356,9 @@ try
     %% Look for EI selection
     metadata.EIselection=look_for_annotation_start_stop(annots,'EI_on','EI_off',ch,header);
     
-    
+     %% Look for burst suppression
+    metadata.burstsup = look_for_annotation_start_stop(annots,'Burstsup_on','Burstsup_off',ch,header);
+   
     %% add triggers
     if ~isempty(trigger)
         metadata.trigger.pos  = trigger(1,:)  ;
