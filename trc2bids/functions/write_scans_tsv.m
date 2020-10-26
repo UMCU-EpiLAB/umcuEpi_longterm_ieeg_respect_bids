@@ -40,6 +40,12 @@ for j=1:size(cfg(1).ses_dir,2)
         rec2stim                = scans_tsv.rec2stim;
         chocs                   = scans_tsv.chocs;
         
+        if any(contains(fieldnames(scans_tsv),'filename'))
+            burstsup            = scans_tsv.burst_suppression;
+        else
+            burstsup            = zeros(size(scans_tsv,1),1);
+        end
+        
     else
         scansnum = 1;
     end
@@ -112,6 +118,7 @@ for j=1:size(cfg(1).ses_dir,2)
     rem_sel(scansnum,1)               = sum(strcmp(annotation_tsv.trial_type,'rem selection'));
     iiaw_sel(scansnum,1)              = sum(strcmp(annotation_tsv.trial_type,'iiaw selection'));
     EI_sel(scansnum,1)                = sum(strcmp(annotation_tsv.trial_type,'EI selection'));
+    burstsup(scansnum,1)              = sum(strcmp(annotation_tsv.trial_type,'burst suppression'));
     
     if metadata.incl_exist == 1
         format{scansnum,1}            = 'included';
@@ -121,11 +128,11 @@ for j=1:size(cfg(1).ses_dir,2)
     
     scans_tsv  = table(filename, acq_time, format, artefact, sleep_total, sleep_rem, sleep_nrem,...
         sleepwaketransition, seizure, seizureclin, seizuresubclin, motor, spes, rec2stim, ...
-        esm, chocs, language, sens, sws_sel, rem_sel, iiaw_sel, EI_sel,...
+        esm, chocs, language, sens, sws_sel, rem_sel, iiaw_sel, EI_sel, burstsup,...
         'VariableNames',{'filename', 'acq_time', 'format','artefact','sleep_total', 'sleep_rem',...
         'sleep_nrem','sleepwaketransition','seizure_total','seizure_clinical', ...
         'seizure_subclinical','motor','spes','rec2stim','esm','chocs', 'language','sens',...
-        'sws_sel','rem_sel','iiaw_sel','EI_sel'});
+        'sws_sel','rem_sel','iiaw_sel','EI_sel','burst_suppression'});
     
     if ~isempty(scans_tsv)
         

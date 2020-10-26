@@ -215,7 +215,7 @@ else
         annotsplit = annotsplit(~cellfun(@isempty,annotsplit));
         
         if size(annotsplit,2) == 1
-            if strcmp(str_start,'Eyes_open')
+            if strcmp(str_start,'Eyes_open') || strcmp(str_start,'Burstsup_on')
                 type = 'n/a';
             else % if str_start is motor/sens/language
                 type = 'unknown';

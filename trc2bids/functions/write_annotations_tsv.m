@@ -56,6 +56,10 @@ annots_new = annots;
 %% visual selection data segments - Epileptogenicity index - about 5s before visual SOZ to 10s after, but sometimes different due to big artefacts/other signal characteristics
 [annots_new, eventsannots ] = add_event2annotation(metadata.EIselection,'EI selection',eventsannots, annots_new,header);
 
+%% burst suppresion
+[annots_new, eventsannots ] = add_event2annotation(metadata.burstsup,'burst suppression',eventsannots, annots_new,header);
+
+
 %% adding trigger data to events list
 % skip following section if no spes/esm/stimulation has been annotated in
 % the file
