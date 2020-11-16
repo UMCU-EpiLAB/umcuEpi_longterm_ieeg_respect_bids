@@ -78,7 +78,7 @@ end
 log_elec_incl = ~strcmp(tb_elecs.group,'other');
 tb_elecs = tb_elecs(log_elec_incl,:);
 if iscell(tb_elecs.x)
-    elecmatrix = [cell2mat(tb_elecs.x) cell2mat(tb_elecs.y) cell2mat(tb_elecs.z)];
+    elecmatrix = [str2double(tb_elecs.x) str2double(tb_elecs.y) str2double(tb_elecs.z)];
 else
     elecmatrix = [tb_elecs.x tb_elecs.y tb_elecs.z];
 end
