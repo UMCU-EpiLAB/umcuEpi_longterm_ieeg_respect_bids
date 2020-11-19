@@ -26,12 +26,10 @@ data2write = ft_preprocessing(temp);
 temp = [];
 temp.outputfile                  = fileVHDR{1};
 
-temp.mri.writesidecar       = 'no';
-temp.meg.writesidecar        = 'no';
-temp.eeg.writesidecar        = 'no';
-temp.ieeg.writesidecar       = 'no';
-temp.channels.writesidecar   = 'no';
-temp.events.writesidecar     = 'no';
+temp.method = 'convert';
+temp.writejson = 'no';
+temp.writetsv = 'no';
+temp.ieeg.writesidecar = 'no';
 
 % write .vhdr, .eeg, .vmrk
 data2bids(temp, data2write)
