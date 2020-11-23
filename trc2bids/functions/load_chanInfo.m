@@ -25,6 +25,7 @@ elec_name       = cc_elecs.name;
 
 % excluding electrodes other (so no grid, strip, depth)
 for i=1:size(ch,1)
+    
     stimname = regexp(ch{i},'[a-z_A-Z]*','match');
     stimnum = regexp(ch{i},'[0-9]*','match');
     if ~isempty(stimname) && ~isempty(stimnum)
@@ -35,38 +36,38 @@ for i=1:size(ch,1)
         test2 = ch{i};
     end
     
-    if sum(cellfun(@(x) strcmpi(x,test1),elec_name)) >0
+    idx = false(size(ch));
+    
+    % if channel name is present in equal writing in electrodes.tsv
+    if sum(cellfun(@(x) strcmpi(x,ch{i}),elec_name)) == 1
+    
+        idx = cellfun(@(x) strcmpi(x,ch{i}),elec_name);
+        
+        % if channelname with extra 0 is present in electrodes.tsv, but not
+        % present without extra 0
+    elseif sum(cellfun(@(x) strcmpi(x,test1),elec_name)) >0 && sum(cellfun(@(x) strcmpi(x,test2),elec_name)) == 0
+        
         if sum(cellfun(@(x) strcmpi(x,test1),elec_name)) ==1 % if electrode name is once in electrodes list, ignore case
             idx = cellfun(@(x) strcmpi(x,test1),elec_name);
-        elseif sum(cellfun(@(x) strcmp(x,test1),elec_name)) == 1 % if electrode name is twice in electrodes list, do not ignore case
-            idx = cellfun(@(x) strcmp(x,test1),elec_name);
+        elseif sum(cellfun(@(x) strcmp(x,test2),elec_name)) == 1 % if electrode name is twice in electrodes list, do not ignore case
+            idx = cellfun(@(x) strcmp(x,test2),elec_name);
         end
         
-        elec_incl(i)        = ~strcmp(cc_elecs.group{idx},'other');
-        elec_soz(i)         = strcmp(cc_elecs.soz{idx},'yes');
-        elec_silicon(i)     = strcmp(cc_elecs.silicon{idx},'yes');
-        elec_resected(i)    = strcmp(cc_elecs.resected{idx},'yes');
-        elec_edge(i)        = strcmp(cc_elecs.edge{idx},'yes');
+        % if channelname is present without extra 0 but not with extra 0 in
+        % electrodes.tsv
+    elseif sum(cellfun(@(x) strcmpi(x,test2),elec_name)) >0 && sum(cellfun(@(x) strcmpi(x,test1),elec_name)) == 0
         
-        if contains(metadata.format_info,'seeg')
-            elec_screw(i)   = strcmp(cc_elecs.screw{idx},'yes');
-            elec_wm(i)      = strcmp(cc_elecs.whitematter{idx},'yes');
-            elec_gm(i)      = strcmp(cc_elecs.graymatter{idx},'yes');
-            elec_csf(i)     = strcmp(cc_elecs.csf{idx},'yes');
-            elec_amyg(i)    = strcmp(cc_elecs.amygdala{idx},'yes');
-            elec_hipp(i)    = strcmp(cc_elecs.hippocampus{idx},'yes');
-            elec_lesion(i)  = strcmp(cc_elecs.lesion{idx},'yes');
-            elec_gliosis(i) = strcmp(cc_elecs.gliosis{idx},'yes');
-            
-        end
-        
-    elseif sum(cellfun(@(x) strcmpi(x,test2),elec_name)) >0
         if sum(cellfun(@(x) strcmpi(x,test2),elec_name)) ==1 % if electrode name is once in electrodes list, ignore case
             idx = cellfun(@(x) strcmpi(x,test2),elec_name);
         elseif sum(cellfun(@(x) strcmp(x,test2),elec_name)) == 1 % if electrode name is twice in electrodes list, do not ignore case
             idx = cellfun(@(x) strcmp(x,test2),elec_name);
         end
         
+    end
+    
+    % fill in the properties found in electrodes.tsv for specific channel
+    if sum(idx) == 1
+        
         elec_incl(i)        = ~strcmp(cc_elecs.group{idx},'other');
         elec_soz(i)         = strcmp(cc_elecs.soz{idx},'yes');
         elec_silicon(i)     = strcmp(cc_elecs.silicon{idx},'yes');
@@ -83,7 +84,8 @@ for i=1:size(ch,1)
             elec_lesion(i)  = strcmp(cc_elecs.lesion{idx},'yes');
             elec_gliosis(i) = strcmp(cc_elecs.gliosis{idx},'yes');
             
-        end
+        end        
+        
     else
         elec_incl(i)        = false;
         elec_soz(i)         = false;
@@ -102,7 +104,6 @@ for i=1:size(ch,1)
             elec_gliosis(i) = false;
             
         end
-        
     end
 end
 
