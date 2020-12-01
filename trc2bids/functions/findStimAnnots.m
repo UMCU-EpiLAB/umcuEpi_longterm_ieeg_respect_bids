@@ -89,8 +89,8 @@ for i=numannots
     end
     
     if size(stimnames,2) == 2 && size(stimnums,2) == 2
-        
-        [stimchan,stimnum] = findstimpair(stimnums,stimnames,metadata.ch_label);
+                
+        [stimchan,stimnum] = findstimpair(stimnums,stimnames,metadata);
         
         annot_stim{countstim,1} = annots_new{i,1};
         annot_stim{countstim,2} = stimchan{1};
