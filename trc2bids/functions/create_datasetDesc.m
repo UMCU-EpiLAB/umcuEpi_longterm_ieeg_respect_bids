@@ -34,6 +34,9 @@ elseif contains(sub_label,'REC2Stim')
     ddesc_json.Funding            = {'Epilepsiefonds #17-07'} ;
     ddesc_json.ReferencesAndLinks = {'articles and/or links'};
     ddesc_json.DatasetDOI         = 'DOI of the dataset if online';
+    
+else
+    error('patient is not correctly anonymized');
 end
 
 if ~isempty(ddesc_json)
