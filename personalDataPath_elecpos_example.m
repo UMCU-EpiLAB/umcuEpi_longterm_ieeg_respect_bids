@@ -7,15 +7,19 @@ function cfg = personalDataPath_elecpos_example(varargin)
 % This personalDataPath_elecpos.m is ignored in .gitignore and will
 % never be visible online! 
 
+% YOU NEED TO FILL IN: 
+% line 19, 20, 21, 22
+
+
 if ~isempty(varargin{1})
     if isstruct(varargin{1})
         
         if sum(contains(fieldnames(varargin{1}),'sub_labels'))
             if contains(varargin{1}.sub_labels,'RESP')
-                cfg(1).proj_dirinput = '/folder/to/ieeg-files/CCEP/patients';
-                cfg(2).proj_dirinput = '/folder/to/bids-files/chronic_ECoG/';
-                cfg(1).proj_diroutput = '/folder/to/bids-files/CCEP/';
-                cfg(2).proj_diroutput = '/folder/to/bids-files/chronic_ECoG/'; % optional: this could remain empty
+                cfg(1).proj_dirinput = '/folder/to/ieeg-files/CCEP/patients'; % shortcut to trc files
+                cfg(2).proj_dirinput = '/folder/to/bids-files/chronic_ECoG/'; % folder containing electrodes.tsv (without sub-level)
+                cfg(1).proj_diroutput = '/folder/to/bids-files/CCEP/'; % folder where you would like to place electrodes.tsv (without sub_level)
+                cfg(2).proj_diroutput = '/folder/to/bids-files/chronic_ECoG/'; % optional: this could remain empty, or you could add a second folder where you would like to place electrodes.tsv
                 
             elseif contains(varargin{1}.sub_labels,'REC2Stim')
                 % REC2Stim
