@@ -34,7 +34,7 @@ cfg(1).mode = 'electrodeposition_preMRI';
 cfg = setLocalDataPath(cfg);
 
 %% STEP 3: defacing MRI - RUN IN LINUX TERMINAL!
-
+% run this part in matlab with 'ctrl enter', this will show the text to copy in the terminal 
 clc
 
 % Find the original MRI and copy this to the folder you're using.
@@ -60,6 +60,7 @@ fprintf('\n ----- OPEN %ssourcedata/%s/%s/anat/  ----- \n ----- CLICK WITH RIGHT
 fprintf('\n ----- RUN LINE BELOW IN LINUX TERMINAL, OPEN DEFACED MRI TO CHECK DEFACING ----- \n mricron \n')
 
 %% STEP 4: run freesurfer to segment brain add Destrieux atlases - RUN IN LINUX TERMINAL!
+% run this part in matlab with 'ctrl enter', this will show the text to copy in the terminal 
 clc
 
 mri_name = [cfg(1).anat_directory, cfg(1).sub_labels{:},'_',cfg(1).ses_label,'_rec-deface_T1w.nii'];
@@ -105,6 +106,7 @@ fprintf('\n ----- RUN LINE BELOW IN LINUX TERMINAL ----- \nrecon-all -autorecon-
 % folder in the freesurfer folder.
 
 %% STEP5: generate surface (The Hull) to project electrodes to - RUN IN LINUX TERMINAL
+% run this part in matlab with 'ctrl enter', this will show the text to copy in the terminal 
 clc
 % only for ECoG, because this is necessary to correct for brain-shift.
 % ECoG electrodes are projected to the hull.
@@ -136,6 +138,7 @@ for i=1:size(cfg(1).hemisphere,2)
 end
 
 %% STEP 7: check hull - RUN IN Linux TERMINAL
+% run this part in matlab with 'ctrl enter', this will show the text to copy in the terminal 
 % type 'mricron'
 % load the MRI
 % put the hull as overlay on top of the mri
@@ -317,6 +320,7 @@ for filenummer=1:100
 end
 
 %% STEP 13: convert freesurfer file to .gii - RUN IN LINUX TERMINAL
+% run this part in matlab with 'ctrl enter', this will show the text to copy in the terminal 
 clc
 
 % Make surface folder
