@@ -40,7 +40,7 @@ for j=1:size(cfg(1).ses_dir,2)
         rec2stim                = scans_tsv.rec2stim;
         chocs                   = scans_tsv.chocs;
         
-        if any(contains(fieldnames(scans_tsv),'filename'))
+        if any(contains(fieldnames(scans_tsv),'burst_suppression'))
             burstsup            = scans_tsv.burst_suppression;
         else
             burstsup            = zeros(size(scans_tsv,1),1);

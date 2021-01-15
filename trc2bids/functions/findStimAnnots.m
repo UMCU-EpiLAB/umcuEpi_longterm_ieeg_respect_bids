@@ -11,10 +11,10 @@ for i=numannots
         annot_neg = [annot_neg;annots_new{i,1}]; %#ok<*AGROW>
     end
     
-    if ~isempty(regexp(lower(annots_new{i,2}),'_[0-9]+ma', 'once')) % to prevent electrode SMAL to be seen as pulse current
+    if ~isempty(regexp(lower(annots_new{i,2}),'_[0-9.]+ma', 'once')) % to prevent electrode SMAL to be seen as pulse current
         
         annot_curr(countcurr,1) = annots_new{i,1};
-        annot_curr(countcurr,2) = str2double(cell2mat(extractBetween(regexp(lower(annots_new{i,2}),'_[0-9]+ma','match'),'_','ma')));
+        annot_curr(countcurr,2) = str2double(cell2mat(extractBetween(regexp(lower(annots_new{i,2}),'_[0-9.]+ma','match'),'_','ma')));
         countcurr = countcurr+1;
     end
     
