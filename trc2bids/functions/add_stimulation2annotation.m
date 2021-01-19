@@ -120,12 +120,15 @@ for stim = 1:size(metadata.stimulation,1)
         % if no trigger is found in the entire data dile
         if sum(cellfun(@(x) contains(x,{'No trigger'}),annots_new(:,2)))>0 && isempty(find(ismember(stimtriggers,stim_start:stim_stop),1))
             locs = stim_start + findtrigger(data, stim_num,header.Rate_Min, stim_start,stim_stop);
+            default_note_now = [default_note, ', triggers were added automatically in Matlab'];
             
-        elseif any(ismember(vertcat(annots_new{contains(annots_new(:,2),'No trigger'),1}),stim_start:stim_stop)) % if No triggers is part of periof of stimulus pair
+        elseif any(ismember(vertcat(annots_new{contains(annots_new(:,2),'No trigger'),1}),stim_start:stim_stop)) % if No triggers is part of period of stimulus pair
             locs = stim_start + findtrigger(data, stim_num,header.Rate_Min, stim_start,stim_stop);
+            default_note_now = [default_note, ', triggers were added automatically in Matlab'];
             
         elseif ~isempty(find(ismember(stimtriggers,stim_start:stim_stop),1)) % when triggers are present
             locs = trigger.pos(ismember(trigger.pos,stim_start:stim_stop) & trigger.val>1000);
+            default_note_now = default_note;
             
         else
             
@@ -325,7 +328,7 @@ for stim = 1:size(metadata.stimulation,1)
             sampstart = [stim_start; allsamps(allsamps>locs(1))];
             
             stim_note = cell(size(stim_locs,1),1);
-            [stim_note{:}] = deal(default_note);
+            [stim_note{:}] = deal(default_note_now);
             
             for n=1:size(samp_note,1)
                 
@@ -340,7 +343,7 @@ for stim = 1:size(metadata.stimulation,1)
         else
             idx_stim_note = true(1,size(stim_locs,1));
             stim_note = cell(size(stim_locs,1),1);
-            [stim_note{idx_stim_note}] = deal(default_note);
+            [stim_note{idx_stim_note}] = deal(default_note_now);
         end
         
         %% involved channels
@@ -352,21 +355,21 @@ for stim = 1:size(metadata.stimulation,1)
         
         %% place all info in
         
-        stimannots(stim).type{i} = stim_type;
-        stimannots(stim).sub_type{i} = stim_sub_type;
-        stimannots(stim).stim_type{i} = stim_bi_mono;
-        stimannots(stim).samp_start{i} = stim_locs;
-        stimannots(stim).s_start{i} = stim_s_start; % time in seconds
-        stimannots(stim).site_name{i} = stim_site_name;
-        stimannots(stim).stim_pulsewidth{i} = stim_pulsewidth;
-        stimannots(stim).duration{i} = stim_duration;
-        stimannots(stim).samp_end{i} = stim_samp_end;
-        stimannots(stim).s_end{i} = stim_s_end;
-        stimannots(stim).stim_cur{i} = stim_cur;
-        stimannots(stim).notes{i} = stim_note;
-        stimannots(stim).freq{i} = stim_freq;
-        stimannots(stim).ch_name_on{i} = stim_ch_name_on;
-        stimannots(stim).ch_name_off{i} = stim_ch_name_off;
+        stimannots(stim).type{i} = stim_type; %#ok<AGROW>
+        stimannots(stim).sub_type{i} = stim_sub_type; %#ok<AGROW>
+        stimannots(stim).stim_type{i} = stim_bi_mono; %#ok<AGROW>
+        stimannots(stim).samp_start{i} = stim_locs; %#ok<AGROW>
+        stimannots(stim).s_start{i} = stim_s_start; %#ok<AGROW> % time in seconds 
+        stimannots(stim).site_name{i} = stim_site_name; %#ok<AGROW>
+        stimannots(stim).stim_pulsewidth{i} = stim_pulsewidth; %#ok<AGROW>
+        stimannots(stim).duration{i} = stim_duration; %#ok<AGROW>
+        stimannots(stim).samp_end{i} = stim_samp_end; %#ok<AGROW>
+        stimannots(stim).s_end{i} = stim_s_end; %#ok<AGROW>
+        stimannots(stim).stim_cur{i} = stim_cur; %#ok<AGROW>
+        stimannots(stim).notes{i} = stim_note; %#ok<AGROW>
+        stimannots(stim).freq{i} = stim_freq; %#ok<AGROW>
+        stimannots(stim).ch_name_on{i} = stim_ch_name_on; %#ok<AGROW>
+        stimannots(stim).ch_name_off{i} = stim_ch_name_off; %#ok<AGROW>
         
     end
 end
