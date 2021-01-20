@@ -6,7 +6,7 @@ countcurr = 1; countstim=1;countlow = 1;countpuls = 1;
  countfreq = 1;
 
 for i=numannots
-    
+    %%
     if ~isempty(regexp(lower(annots_new{i,2}),'neg', 'once'))
         annot_neg = [annot_neg;annots_new{i,1}]; %#ok<*AGROW>
     end
@@ -59,7 +59,7 @@ for i=numannots
         countlow = countlow+1;
     end
     
-    %% stimulus pair
+    % stimulus pair
     stimnames = {}; stimnums = {};
     if ~isempty(regexp(annots_new{i,2},'_', 'once')) % if there is a _ in the annotation (normally, this is a SPES annotation)
         annotsplit = strsplit(annots_new{i,2},'_');
@@ -84,7 +84,7 @@ for i=numannots
         end
     else % if there is no _ or automatically generated annotation
         annotsplit = strsplit(annots_new{i,2},'_');
-        stimnames = regexp(annotsplit{1},'[a-z,A-Z]*','match');
+        stimnames = regexp(annotsplit{1},'[a-zA-Z]*','match');
         stimnums = regexp(annotsplit{1},'\d*','match');
     end
     
