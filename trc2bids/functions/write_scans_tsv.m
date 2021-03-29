@@ -53,7 +53,7 @@ for j=1:size(cfg(1).ses_dir,2)
     filename{scansnum,1}              = ['ieeg/' f]; 
     
     % acquisition time
-    acq_time{scansnum,1}              = datetime(1900,1,str2double(metadata.run_name),...
+    acq_time(scansnum,1)              = datetime(1900,1,str2double(metadata.run_name),...
         str2double(metadata.hour),str2double(metadata.min),str2double(metadata.sec),'Format','yyyy-MM-dd''T''HH:mm:ss'); 
     
     % sleep period
