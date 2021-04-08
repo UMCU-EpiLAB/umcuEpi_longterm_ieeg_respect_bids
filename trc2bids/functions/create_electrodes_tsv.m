@@ -125,7 +125,7 @@ if ~isempty(electrodes_tsv)
             
             cc_elec_old = readtable(filename,'FileType','text','Delimiter','\t');
             
-            % if number of electrodes is not changes and electrode
+            % if number of electrodes is not changed and electrode
             % positions x y z are filled in, these positions should be
             % copied to the electrodes_tsv
             if size(cc_elec_old,1) == size(electrodes_tsv,1)
@@ -158,7 +158,7 @@ if ~isempty(electrodes_tsv)
             struct2 = table2struct(electrodes_tsv);
             if ~isequal(struct1,struct2)
                 fprintf('%s exists!\n',filename)
-                n=1;
+%                 n=1;
 %                 while isfile(filename)
 %                     nameminelec = strsplit(filename,'electrodes');
 %                     filename = [nameminelec{1} 'electrodes_' num2str(n) '.tsv'];

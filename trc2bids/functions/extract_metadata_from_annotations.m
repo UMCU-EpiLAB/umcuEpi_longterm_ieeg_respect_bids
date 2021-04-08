@@ -77,7 +77,7 @@ try
         end
     else
         metadata = look_for_format(metadata,format_idx,annots);
-    end
+    end    
     
     %% ---------- INCLUDED ----------
     included_idx=cellfun(@(x) contains(x,{'Included'}),annots(:,2));
