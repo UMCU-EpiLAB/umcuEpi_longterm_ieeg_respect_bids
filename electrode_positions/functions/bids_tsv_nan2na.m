@@ -25,8 +25,16 @@ for kk = 1:length(var_names)
     % test whether this column is a cell or a vector
     if iscell(thisColumn)
         for ll = 1:length(thisColumn) % run through cell, test for every entry
-            if isequal(thisColumn{ll},'NaN') % is there a NaN?
-                thisColumn{ll}='n/a'; % replace with 'n/a'
+            if isstring(thisColumn{ll})
+                if isequal(thisColumn{ll},'NaN') % is there a NaN?
+                    thisColumn{ll}='n/a'; % replace with 'n/a'
+                end
+            elseif isnumeric(thisColumn{ll})
+                if  isequal(num2str(thisColumn{ll}),'NaN')
+                    thisColumn{ll}= 'n/a'; % replace with 'n/a'
+                else
+                    thisColumn{ll} = num2str(thisColumn{ll});
+                end
             end
         end
     elseif isvector(thisColumn)
