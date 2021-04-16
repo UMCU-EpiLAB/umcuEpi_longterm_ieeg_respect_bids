@@ -33,10 +33,16 @@ type                                = cell(size(name));
 
 % ECOG/SEEG
 if(any(metadata.ch2use_included))
-    if contains(lower(metadata.format_info),'ecog')
+    if (contains(lower(metadata.format_info),'ecog') || contains(lower(metadata.format_info),'strip')) && ~contains(lower(metadata.format_info),'seeg')
         [type{metadata.ch2use_included}] = deal('ECOG');
-    elseif contains(lower(metadata.format_info),'seeg')
+    elseif contains(lower(metadata.format_info),'seeg') && ~(contains(lower(metadata.format_info),'ecog') || contains(lower(metadata.format_info),'strip'))
         [type{metadata.ch2use_included}] = deal('SEEG');
+    elseif contains(lower(metadata.format_info),'seeg') && (contains(lower(metadata.format_info),'ecog') || contains(lower(metadata.format_info),'strip'))
+        [type{metadata.idx_seeg}] = deal('SEEG');
+        [type{metadata.idx_strip}] = deal('ECOG');
+        [type{metadata.idx_grid}] = deal('ECOG');
+        [type{metadata.idx_depth}] = deal('ECOG');
+        
     end
 end
 

@@ -77,7 +77,7 @@ try
         end
     else
         metadata = look_for_format(metadata,format_idx,annots);
-    end
+    end    
     
     %% ---------- INCLUDED ----------
     included_idx=cellfun(@(x) contains(x,{'Included'}),annots(:,2));
@@ -152,6 +152,8 @@ try
             if ~contains(annots{hemisphere_idx,2},'[') % if annotation is like Hemisphere;left or Hemisphere;right
                 str2parse=annots{hemisphere_idx,2};
                 C=strsplit(str2parse,{'; ',';'});
+                % remove empty cells
+                C = C(~cellfun('isempty',C));
                 metadata.hemisphere=C{2};
                 if size(C,2) >2
                     warning('Annotation in "Hemisphere" might be incorrect')

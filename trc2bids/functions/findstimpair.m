@@ -10,7 +10,7 @@ for j=1:size(stimnums,2)
     
     % check if one of the tests is present in ch_label, and that this
     % ch_label is one of the ecog channels
-    if sum(strcmpi(test1,ch_label))>0 && ismember(find(strcmpi(test1,ch_label)),find(metadata.ch2use_included)) 
+    if sum(strcmpi(test1,ch_label))>0 && any(ismember(find(strcmpi(test1,ch_label)),find(metadata.ch2use_included))) 
         if sum(strcmpi(test1,ch_label))==1
             stimchan{j} = ch_label{strcmpi(test1,ch_label)};
             stimnum(j) = find(strcmpi(test1,ch_label)==1);
@@ -18,7 +18,7 @@ for j=1:size(stimnums,2)
             stimchan{j} = ch_label{strcmp(test1,ch_label)};
             stimnum(j) = find(strcmp(test1,ch_label)==1);
         end
-    elseif sum(strcmpi(test2,ch_label))>0 && ismember(find(strcmpi(test2,ch_label)),find(metadata.ch2use_included)) 
+    elseif sum(strcmpi(test2,ch_label))>0 && any(ismember(find(strcmpi(test2,ch_label)),find(metadata.ch2use_included))) 
         if sum(strcmpi(test2,ch_label))==1
             stimchan{j} = ch_label{strcmpi(test2,ch_label)};
             stimnum(j) = find(strcmpi(test2,ch_label)==1);
