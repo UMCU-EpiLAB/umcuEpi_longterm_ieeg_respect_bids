@@ -113,6 +113,11 @@ metadata.ch2use_soz         = logical(elec_soz);
 metadata.ch2use_resected    = logical(elec_resected);
 metadata.ch2use_edge        = logical(elec_edge);
 
+metadata.idx_grid = contains(cc_elecs.group,'grid');
+metadata.idx_strip = contains(cc_elecs.group,'strip');
+metadata.idx_depth = contains(cc_elecs.group,'depth');
+metadata.idx_seeg = contains(cc_elecs.group,'depth');
+
 if contains(metadata.format_info,'seeg')
     
     metadata.ch2use_screw   = logical(elec_screw);
