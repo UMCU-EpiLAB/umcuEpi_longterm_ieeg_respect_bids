@@ -27,16 +27,16 @@ name                                      = mergevector({header.elec(:).Name}', 
 x                                         = repmat({0},header.Num_Chan,1);
 y                                         = repmat({0},header.Num_Chan,1);
 z                                         = repmat({0},header.Num_Chan,1);
-e_size                                    = repmat({'n/a'},header.Num_Chan,1); 
-material                                  = repmat({'n/a'},header.Num_Chan,1); 
-manufacturer                              = extract_manufacturer_info(metadata); 
+e_size                                    = repmat({'n/a'},header.Num_Chan,1);
+material                                  = repmat({'n/a'},header.Num_Chan,1);
+manufacturer                              = extract_manufacturer_info(metadata);
 group                                     = extract_group_info(metadata);
 hemisphere                                = extract_hemisphere_info(metadata);
 
-silicon                                   = repmat({'no'},header.Num_Chan,1); 
-soz                                       = repmat({'no'},header.Num_Chan,1); 
-resected                                  = repmat({'no'},header.Num_Chan,1); 
-edge                                      = repmat({'no'},header.Num_Chan,1); 
+silicon                                   = repmat({'no'},header.Num_Chan,1);
+soz                                       = repmat({'no'},header.Num_Chan,1);
+resected                                  = repmat({'no'},header.Num_Chan,1);
+edge                                      = repmat({'no'},header.Num_Chan,1);
 
 if contains(lower(metadata.format_info),'seeg')
     screw                                     = repmat({'no'},header.Num_Chan,1);
@@ -125,50 +125,110 @@ if ~isempty(electrodes_tsv)
             
             cc_elec_old = readtable(filename,'FileType','text','Delimiter','\t');
             
-            % if number of electrodes is not changes and electrode
-            % positions x y z are filled in, these positions should be
-            % copied to the electrodes_tsv
-            if size(cc_elec_old,1) == size(electrodes_tsv,1)
-                electrodes_tsv.x = cc_elec_old.x;
-                electrodes_tsv.y = cc_elec_old.y;
-                electrodes_tsv.z = cc_elec_old.z;
+            if any(cc_elec_old.x ~= 0) % electrode positions has been added
                 
-                if any(contains(fieldnames(cc_elec_old),'Destrieux'))    
-                   electrodes_tsv.Destrieux_label       = cc_elec_old.Destrieux_label;
-                   electrodes_tsv.Destrieux_label_text  = cc_elec_old.Destrieux_label_text;
-                   
-                   if contains(fieldnames(cc_elec_old),'DKTatlas_label') % this is the old naming, inconsistent with electrodes.json
-                       electrodes_tsv.DKT_label             = cc_elec_old.DKTatlas_label;
-                       electrodes_tsv.DKT_label_text        = cc_elec_old.DKTatlas_label_text;
-                   elseif contains(fieldnames(cc_elec_old),'DKT_label')
-                       electrodes_tsv.DKT_label             = cc_elec_old.DKT_label;
-                       electrodes_tsv.DKT_label_text        = cc_elec_old.DKT_label_text;
-                   end
-                   electrodes_tsv.Wang_label            = cc_elec_old.Wang_label;
-                   electrodes_tsv.Wang_label_text       = cc_elec_old.Wang_label_text;
-                   electrodes_tsv.Benson_label          = cc_elec_old.Benson_label;
-                   electrodes_tsv.Benson_label_text     = cc_elec_old.Benson_label_text;
-                   electrodes_tsv.Benson_eccen          = cc_elec_old.Benson_eccen;
-                   electrodes_tsv.Benson_polarangle     = cc_elec_old.Benson_polarangle;
-                   electrodes_tsv.Benson_sigma          = cc_elec_old.Benson_sigma;
+                % if number of electrodes is changed and electrode
+                    % positions x y z are filled in, these positions should be
+                    % copied one by one to the electrodes_tsv
+                if size(cc_elec_old,1) ~= size(electrodes_tsv,1)
+                    for elec = 1:size(electrodes_tsv,1)
+                        
+                        if metadata.ch2use_included(elec) == 1
+                            idx_elec = contains(cc_elec_old.name,electrodes_tsv.name{elec},'IgnoreCase',true);
+                            
+                            if sum(idx_elec) == 1
+                                electrodes_tsv.x{elec} = cc_elec_old.x(idx_elec);
+                                electrodes_tsv.y{elec} = cc_elec_old.y(idx_elec);
+                                electrodes_tsv.z{elec} = cc_elec_old.z(idx_elec);
+                                
+                                if any(contains(fieldnames(cc_elec_old),'Destrieux'))
+                                    electrodes_tsv.Destrieux_label{elec}       = cc_elec_old.Destrieux_label(idx_elec);
+                                    electrodes_tsv.Destrieux_label_text(elec)  = cc_elec_old.Destrieux_label_text(idx_elec);
+                                    
+                                    if any(contains(fieldnames(cc_elec_old),'DKTatlas_label')) % this is the old naming, inconsistent with electrodes.json
+                                        electrodes_tsv.DKT_label(elec)             = cc_elec_old.DKTatlas_label(idx_elec);
+                                        electrodes_tsv.DKT_label_text{elec}        = cc_elec_old.DKTatlas_label_text(idx_elec);
+                                    elseif any(contains(fieldnames(cc_elec_old),'DKT_label'))
+                                        electrodes_tsv.DKT_label{elec}             = cc_elec_old.DKT_label(idx_elec);
+                                        electrodes_tsv.DKT_label_text{elec}        = cc_elec_old.DKT_label_text(idx_elec);
+                                    end
+                                    electrodes_tsv.Wang_label(elec)            = cc_elec_old.Wang_label(idx_elec);
+                                    electrodes_tsv.Wang_label_text(elec)       = cc_elec_old.Wang_label_text(idx_elec);
+                                    electrodes_tsv.Benson_label(elec)          = cc_elec_old.Benson_label(idx_elec);
+                                    electrodes_tsv.Benson_label_text(elec)     = cc_elec_old.Benson_label_text(idx_elec);
+                                    electrodes_tsv.Benson_eccen(elec)          = cc_elec_old.Benson_eccen(idx_elec);
+                                    electrodes_tsv.Benson_polarangle(elec)     = cc_elec_old.Benson_polarangle(idx_elec);
+                                    electrodes_tsv.Benson_sigma(elec)          = cc_elec_old.Benson_sigma(idx_elec);
+                                end
+                            end
+                        else
+                            if any(contains(fieldnames(cc_elec_old),'Destrieux'))
+                                electrodes_tsv.x{elec}                     = NaN;
+                                electrodes_tsv.y{elec}                     = NaN;
+                                electrodes_tsv.z{elec}                     = NaN;
+                                electrodes_tsv.Destrieux_label{elec}       = NaN;
+                                electrodes_tsv.Destrieux_label_text{elec}  = NaN;
+                                electrodes_tsv.DKT_label{elec}             = NaN;
+                                electrodes_tsv.DKT_label_text{elec}        = NaN;
+                                electrodes_tsv.Wang_label{elec}            = NaN;
+                                electrodes_tsv.Wang_label_text{elec}       = NaN;
+                                electrodes_tsv.Benson_label{elec}          = NaN;
+                                electrodes_tsv.Benson_label_text{elec}     = NaN;
+                                electrodes_tsv.Benson_eccen{elec}          = NaN;
+                                electrodes_tsv.Benson_polarangle{elec}     = NaN;
+                                electrodes_tsv.Benson_sigma{elec}          = NaN;
+                                
+                            end
+                            
+                        end
+                    end
+                    
+                    % if number of electrodes is not changed and electrode
+                    % positions x y z are filled in, these positions should be
+                    % copied to the electrodes_tsv
+                elseif size(cc_elec_old,1) == size(electrodes_tsv,1)
+                    electrodes_tsv.x = cc_elec_old.x;
+                    electrodes_tsv.y = cc_elec_old.y;
+                    electrodes_tsv.z = cc_elec_old.z;
+                    
+                    if any(contains(fieldnames(cc_elec_old),'Destrieux'))
+                        electrodes_tsv.Destrieux_label       = cc_elec_old.Destrieux_label;
+                        electrodes_tsv.Destrieux_label_text  = cc_elec_old.Destrieux_label_text;
+                        
+                        if contains(fieldnames(cc_elec_old),'DKTatlas_label') % this is the old naming, inconsistent with electrodes.json
+                            electrodes_tsv.DKT_label             = cc_elec_old.DKTatlas_label;
+                            electrodes_tsv.DKT_label_text        = cc_elec_old.DKTatlas_label_text;
+                        elseif contains(fieldnames(cc_elec_old),'DKT_label')
+                            electrodes_tsv.DKT_label             = cc_elec_old.DKT_label;
+                            electrodes_tsv.DKT_label_text        = cc_elec_old.DKT_label_text;
+                        end
+                        electrodes_tsv.Wang_label            = cc_elec_old.Wang_label;
+                        electrodes_tsv.Wang_label_text       = cc_elec_old.Wang_label_text;
+                        electrodes_tsv.Benson_label          = cc_elec_old.Benson_label;
+                        electrodes_tsv.Benson_label_text     = cc_elec_old.Benson_label_text;
+                        electrodes_tsv.Benson_eccen          = cc_elec_old.Benson_eccen;
+                        electrodes_tsv.Benson_polarangle     = cc_elec_old.Benson_polarangle;
+                        electrodes_tsv.Benson_sigma          = cc_elec_old.Benson_sigma;
+                    end
                 end
+                
             end
             
             struct1 = table2struct(cc_elec_old);
             struct2 = table2struct(electrodes_tsv);
             if ~isequal(struct1,struct2)
                 fprintf('%s exists!\n',filename)
-                n=1;
-%                 while isfile(filename)
-%                     nameminelec = strsplit(filename,'electrodes');
-%                     filename = [nameminelec{1} 'electrodes_' num2str(n) '.tsv'];
-%                     n=n+1;
-%                 end
+                %                 n=1;
+                %                 while isfile(filename)
+                %                     nameminelec = strsplit(filename,'electrodes');
+                %                     filename = [nameminelec{1} 'electrodes_' num2str(n) '.tsv'];
+                %                     n=n+1;
+                %                 end
             end
         end
         
         electrodes_tsv = bids_tsv_nan2na(electrodes_tsv);
-
+        
         write_tsv(filename, electrodes_tsv);
     end
 end
