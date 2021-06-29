@@ -14,4 +14,7 @@ if ~isempty(partdesc_json)
     
     filename = fullfile(proj_dir,'participants.json');
     write_json(filename, partdesc_json)
+    fileattrib(filename,'-w -x','o') % make not-writable and not-executable for other users
+    fileattrib(filename,'+w +x','g') % make writable and executable (required for folders to open them) for group users
+
 end

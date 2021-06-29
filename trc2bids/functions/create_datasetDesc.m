@@ -45,4 +45,7 @@ if ~isempty(ddesc_json)
     write_json(filename, ddesc_json)
     %     json_options.indent = ' ';
     %     jsonwrite(filename, mergeconfig(existing, ddesc_json), json_options)
+    fileattrib(filename,'-w -x','o') % make not-writable and not-executable for other users
+    fileattrib(filename,'+w +x','g') % make writable and executable (required for folders to open them) for group users
+
 end

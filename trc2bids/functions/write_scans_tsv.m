@@ -1,5 +1,5 @@
 function write_scans_tsv(cfg,metadata,annotation_tsv,fscans_name,fieeg_json_name)
-
+%%
 f = replace(fieeg_json_name,'.json','.eeg');
 
 for j=1:size(cfg(1).ses_dir,2)
@@ -137,5 +137,9 @@ for j=1:size(cfg(1).ses_dir,2)
     if ~isempty(scans_tsv)
         
         write_tsv(file_name, scans_tsv);
+
+        fileattrib(file_name,'-w -x','o') % make not-writable and not-executable for other users
+        fileattrib(file_name,'+w +x','g') % make writable and executable (required for folders to open them) for group users
+
     end
 end

@@ -36,4 +36,8 @@ if ~isempty(edesc_json)
     
     filename = fullfile(proj_dir,sub_label,ses_label,'ieeg',[sub_label,'_',ses_label, '_events.json']);
     write_json(filename, edesc_json)
+    
+    fileattrib(filename,'-w -x','o') % make not-writable and not-executable for other users
+    fileattrib(filename,'+w +x','g') % make writable and executable (required for folders to open them) for group users
+
 end
