@@ -121,6 +121,10 @@ if ~isempty(annotation_tsv)
             ft_error('existing file is not empty');
         end
         write_tsv(filename, annotation_tsv);
+        
+        fileattrib(filename,'-w -x','o') % make not-writable and not-executable for other users
+        fileattrib(filename,'+w +x','g') % make writable and executable (required for folders to open them) for group users
+
     end
 end
 

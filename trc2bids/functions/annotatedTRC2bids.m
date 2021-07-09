@@ -136,9 +136,25 @@ try
         
         convertTRC2brainvision(cfg,ieeg_dir, fieeg_name)
         
+        % correct the rights after writing .vhdr, .eeg and .vmrk
+        for i = 1:size(ieeg_dir,2)
+            dirname = replace(fullfile(ieeg_dir{i},fieeg_name),'.TRC','.vhdr');
+            fileattrib(dirname,'-w -x','o') % make not-writable and not-executable for other users
+            fileattrib(dirname,'+w +x','g') % make writable and executable (required for folders to open them) for group users
+            
+            dirname = replace(fullfile(ieeg_dir{i},fieeg_name),'.TRC','.eeg');
+            fileattrib(dirname,'-w -x','o') % make not-writable and not-executable for other users
+            fileattrib(dirname,'+w +x','g') % make writable and executable (required for folders to open them) for group users
+        
+            dirname = replace(fullfile(ieeg_dir{i},fieeg_name),'.TRC','.vmrk');
+            fileattrib(dirname,'-w -x','o') % make not-writable and not-executable for other users
+            fileattrib(dirname,'+w +x','g') % make writable and executable (required for folders to open them) for group users
+        end
+
         %% create json sidecar for ieeg file
         
         cfg = create_jsonsidecar(cfg,metadata,header,fieeg_json_name);
+        
         
         %% create _channels.tsv
         
@@ -213,6 +229,10 @@ if exist(dirname, 'dir')
     warning('%s exist already',dirname)
 else
     mkdir(dirname)
+    
+    fileattrib(dirname,'-w -x','o') % make not-writable and not-executable for other users
+    fileattrib(dirname,'+w +x','g') % make writable and executable (required for folders to open them) for group users
+
 end
 
 

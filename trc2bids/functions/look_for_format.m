@@ -12,6 +12,12 @@ seegloc = find(cellfun('length',regexp(lower(annotsformatsplit),'seeg')) == 1);
 
 locs_all = sort([ecogloc, striploc, depthloc,seegloc,size(annotsformatsplit,2)+1]);
 
+% find number of letters in each channel
+strSizeCh = NaN(size(metadata.ch));
+for chan = 1:size(metadata.ch,1)
+    strSizeCh(chan,1) = sum(isstrprop(metadata.ch{chan},'alpha'));
+end
+
 % ECoG
 idx_grid = false(size(metadata.ch) );
 if ~isempty(ecogloc)
@@ -24,8 +30,13 @@ if ~isempty(ecogloc)
     
     % add in metadata which electrodes are in strip
     for n = 1:size(ecogformatall,2)
-        idx_gridpart = contains(metadata.ch,extractBefore(ecogformatall{n},'[')) ;
         
+        size_gridpart = strlength(extractBefore(ecogformatall{n},'[')) ;     
+        % find which electrodes have same name, and same size (to avoid FML
+        % to be part of ML, because both contains ML (RESP0991))
+        idx_gridpart = ismember(strSizeCh, size_gridpart) == 1 & ...
+            contains(metadata.ch,extractBefore(ecogformatall{n},'[')) == 1;
+                
         if sum(idx_gridpart) == str2double(extractBetween(ecogformatall{n},'[','x')) * str2double(extractBetween(ecogformatall{n},'x',']'))
             idx_grid(idx_gridpart) = true;
         else
@@ -49,8 +60,13 @@ if ~isempty(striploc)
     
     % add in metadata which electrodes are in strip
     for n = 1:size(stripformatall,2)
-        idx_strippart = contains(metadata.ch,extractBefore(stripformatall{n},'[')) ;
         
+        size_strippart = strlength(extractBefore(stripformatall{n},'[')) ;     
+        % find which electrodes have same name, and same size (to avoid FML
+        % to be part of ML, because both contains ML (RESP0991))
+        idx_strippart = ismember(strSizeCh, size_strippart) == 1 & ...
+            contains(metadata.ch,extractBefore(stripformatall{n},'[')) == 1;
+                
         if sum(idx_strippart) == str2double(extractBetween(stripformatall{n},'[','x')) * str2double(extractBetween(stripformatall{n},'x',']'))
             idx_strip(idx_strippart) = true;
         else
@@ -73,8 +89,13 @@ if ~isempty(depthloc)
     
     % add in metadata which electrodes are in depth
     for n = 1:size(depthformatall,2)
-        idx_depthpart = contains(metadata.ch,extractBefore(depthformatall{n},'[')) ;
         
+        size_depthpart = strlength(extractBefore(depthformatall{n},'[')) ;     
+        % find which electrodes have same name, and same size (to avoid FML
+        % to be part of ML, because both contains ML (RESP0991))
+        idx_depthpart = ismember(strSizeCh, size_depthpart) == 1 & ...
+            contains(metadata.ch,extractBefore(depthformatall{n},'[')) == 1;
+                
         if sum(idx_depthpart) == str2double(extractBetween(depthformatall{n},'[','x')) * str2double(extractBetween(depthformatall{n},'x',']'))
             idx_depth(idx_depthpart) = true;
         else
@@ -99,7 +120,12 @@ if ~isempty(seegloc)
   
     % add in metadata which electrodes are in strip
     for n = 1:size(seegformatall,2)
-        idx_seegpart = contains(metadata.ch,extractBefore(seegformatall{n},'[')) ;
+                
+        size_seegpart = strlength(extractBefore(seegformatall{n},'[')) ;     
+        % find which electrodes have same name, and same size (to avoid FML
+        % to be part of ML, because both contains ML (RESP0991))
+        idx_seegpart = ismember(strSizeCh, size_seegpart) == 1 & ...
+            contains(metadata.ch,extractBefore(seegformatall{n},'[')) == 1;
         
         if sum(idx_seegpart) == str2double(extractBetween(seegformatall{n},'[','x')) * str2double(extractBetween(seegformatall{n},'x',']'))
             idx_seeg(idx_seegpart) = true;
