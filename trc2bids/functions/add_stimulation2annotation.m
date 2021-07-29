@@ -55,6 +55,9 @@ for stim = 1:size(metadata.stimulation,1)
     elseif contains(lower(evname),'chocs2')
         default_freq = 1;
         default_pulsewidth = 2.025/1000; %2025 usec
+    elseif contains(lower(evname),'treni')
+        default_freq = 50;
+        default_pulsewidth = 1.025/1000; %1025 usec        
     elseif contains(lower(evname),'rec2stim')
         default_freq = 0;
         default_pulsewidth = 0;
@@ -258,7 +261,7 @@ for stim = 1:size(metadata.stimulation,1)
         %% duration of stimulation (if spes than, duration is pulsdur, when it its ESM, than 50Hz can have a pulse duration of 200 usec, but a total duration of stimulation that is about 5sec)
         
         if any(idx_trigger)
-            
+            stim_duration = cell(size(stim_locs,1),1);
             stim_duration{1} = (trigger.pos(idx_trigger)-stim_start)/header.Rate_Min; % in seconds
         else
             stim_duration = cell(size(stim_locs,1),1);
