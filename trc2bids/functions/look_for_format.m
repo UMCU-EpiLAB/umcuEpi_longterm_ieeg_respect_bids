@@ -36,11 +36,25 @@ if ~isempty(ecogloc)
         % to be part of ML, because both contains ML (RESP0991))
         idx_gridpart = ismember(strSizeCh, size_gridpart) == 1 & ...
             contains(metadata.ch,extractBefore(ecogformatall{n},'[')) == 1;
+               
                 
         if sum(idx_gridpart) == str2double(extractBetween(ecogformatall{n},'[','x')) * str2double(extractBetween(ecogformatall{n},'x',']'))
             idx_grid(idx_gridpart) = true;
         else
-            error('Error in "look_for_format.m", the number of electrodes in ecog-grid is not equal to the total of electrodes with the name %s',extractBefore(ecogformatall{n},'['))
+            warning('Error in "look_for_format.m", the number of electrodes in ecog-grid is not equal to the total of electrodes with the name %s',extractBefore(ecogformatall{n},'['))
+           
+            equal_names = metadata.ch(idx_gridpart);
+            total_elec = str2double(extractBetween(ecogformatall{n},'[','x')) * str2double(extractBetween(ecogformatall{n},'x',']'));
+            string = [repmat('%s, ',1,size(equal_names,1)-1),'%s'];
+            
+            % Type/copy the electrodes that you want to keep. You do not
+            % have to use [] of (). Just copy paste from the line in the
+            % command window
+            keep_elec = input(sprintf(['Select only the true %d of these %d electrodes [',string,']: \n'],total_elec, size(equal_names,1), equal_names{:}),'s');                    
+            str_keep_elec = strsplit(keep_elec,', ');
+            idx_grid = ismember(metadata.ch, str_keep_elec);
+            
+            
         end
     end
     
