@@ -125,7 +125,7 @@ if ~isempty(electrodes_tsv)
             
             cc_elec_old = readtable(filename,'FileType','text','Delimiter','\t');
             
-            if any(cc_elec_old.x ~= 0) % electrode positions has been added
+            if any(str2double(cc_elec_old.x) ~= 0) % electrode positions has been added
                 
                 % if number of electrodes is changed and electrode
                     % positions x y z are filled in, these positions should be
