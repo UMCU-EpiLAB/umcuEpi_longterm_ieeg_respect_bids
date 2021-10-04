@@ -34,13 +34,37 @@ if ~isempty(ecogloc)
         size_gridpart = strlength(extractBefore(ecogformatall{n},'[')) ;     
         % find which electrodes have same name, and same size (to avoid FML
         % to be part of ML, because both contains ML (RESP0991))
+        
+        % so apparently, the number in Format is not similar to the number
+        % of electrodes with this name. This is the case in RESP0588. In
+        % this patient, there are unplugged electrodes named C29-32, so
+        % these don't contain any data (only noise), but are still in the
+        % electrode list. This does not mean that the number in Format is
+        % incorrect, so we should look how to exclude this situation from
+        % getting this error.
         idx_gridpart = ismember(strSizeCh, size_gridpart) == 1 & ...
-            contains(metadata.ch,extractBefore(ecogformatall{n},'[')) == 1;
+            contains(metadata.ch,extractBefore(ecogformatall{n},'[')) & ...
+            metadata.ch2use_included == 1;
                 
-        if sum(idx_gridpart) == str2double(extractBetween(ecogformatall{n},'[','x')) * str2double(extractBetween(ecogformatall{n},'x',']'))
+        % calculate number of electrodes in format. This helps in both
+        % C[4x8] and in C[4x8,4x8] (when there are two grids located next
+        % to eachother, with the same naming) (see RESP0621)
+        ecogformatparts = strsplit(ecogformatall{n},',');
+        formatparts = NaN(size(ecogformatparts));
+        for i = 1:size(ecogformatparts,2)
+            if contains(ecogformatparts{i},{'[','x'}) && ~contains(ecogformatparts{i},{']'}) % like C[4x8 (as part of C[4x8,4x8])
+                formatparts(i) = str2double(extractBetween(ecogformatparts{i},'[','x')) * str2double(extractAfter(ecogformatparts{i},'x'));
+            elseif contains(ecogformatparts{i},{']','x'}) && ~contains(ecogformatparts{i},{'['}) % like 4x8] (as part of C[4x8,4x8])
+                formatparts(i) = str2double(extractBefore(ecogformatparts{i},'x')) * str2double(extractBetween(ecogformatparts{i},'x',']'));
+            elseif contains(ecogformatparts{i},{'[','x',']'}) % like C[4x8]
+                formatparts(i) = str2double(extractBetween(ecogformatparts{i},'[','x')) * str2double(extractBetween(ecogformatparts{i},'x',']'));
+            end
+        end
+        
+        if sum(idx_gridpart) == sum(formatparts)
             idx_grid(idx_gridpart) = true;
-        else
-            error('Error in "look_for_format.m", the number of electrodes in ecog-grid is not equal to the total of electrodes with the name %s',extractBefore(ecogformatall{n},'['))
+        else            
+                error('Error in "look_for_format.m", the number of electrodes in ecog-grid is not equal to the total of electrodes with the name %s',extractBefore(ecogformatall{n},'['))
         end
     end
     
@@ -65,7 +89,8 @@ if ~isempty(striploc)
         % find which electrodes have same name, and same size (to avoid FML
         % to be part of ML, because both contains ML (RESP0991))
         idx_strippart = ismember(strSizeCh, size_strippart) == 1 & ...
-            contains(metadata.ch,extractBefore(stripformatall{n},'[')) == 1;
+            contains(metadata.ch,extractBefore(stripformatall{n},'[')) & ...
+            metadata.ch2use_included == 1;
                 
         if sum(idx_strippart) == str2double(extractBetween(stripformatall{n},'[','x')) * str2double(extractBetween(stripformatall{n},'x',']'))
             idx_strip(idx_strippart) = true;
@@ -94,7 +119,8 @@ if ~isempty(depthloc)
         % find which electrodes have same name, and same size (to avoid FML
         % to be part of ML, because both contains ML (RESP0991))
         idx_depthpart = ismember(strSizeCh, size_depthpart) == 1 & ...
-            contains(metadata.ch,extractBefore(depthformatall{n},'[')) == 1;
+            contains(metadata.ch,extractBefore(depthformatall{n},'[')) & ...
+            metadata.ch2use_included == 1;
                 
         if sum(idx_depthpart) == str2double(extractBetween(depthformatall{n},'[','x')) * str2double(extractBetween(depthformatall{n},'x',']'))
             idx_depth(idx_depthpart) = true;
@@ -125,7 +151,8 @@ if ~isempty(seegloc)
         % find which electrodes have same name, and same size (to avoid FML
         % to be part of ML, because both contains ML (RESP0991))
         idx_seegpart = ismember(strSizeCh, size_seegpart) == 1 & ...
-            contains(metadata.ch,extractBefore(seegformatall{n},'[')) == 1;
+            contains(metadata.ch,extractBefore(seegformatall{n},'[')) & ...
+            metadata.ch2use_included == 1;
         
         if sum(idx_seegpart) == str2double(extractBetween(seegformatall{n},'[','x')) * str2double(extractBetween(seegformatall{n},'x',']'))
             idx_seeg(idx_seegpart) = true;

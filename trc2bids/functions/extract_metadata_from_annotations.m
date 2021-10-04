@@ -65,20 +65,6 @@ try
         end
     end
     
-    %% ---------- FORMAT ----------
-    format_idx=cellfun(@(x) contains(x,{'Format'}),annots(:,2));
-    if(sum(format_idx)<1)
-        file = dir(fullfile(cfg(2).proj_dirinput,patName,['ses-',metadata.ses_name],'ieeg','*ieeg.json'));
-        if ~isempty(file)
-            ieeg_json = jsondecode(fileread([file(1).folder '/' file(1).name]) );
-            metadata.format_info = ieeg_json.iEEGElectrodeGroups;
-        else
-            error('Missing Format annotation, and no other json from other ECoG with format annotation found')
-        end
-    else
-        metadata = look_for_format(metadata,format_idx,annots);
-    end    
-    
     %% ---------- INCLUDED ----------
     included_idx=cellfun(@(x) contains(x,{'Included'}),annots(:,2));
     
@@ -100,6 +86,20 @@ try
         end
         
     end
+    
+    %% ---------- FORMAT ----------
+    format_idx=cellfun(@(x) contains(x,{'Format'}),annots(:,2));
+    if (sum(format_idx)<1)
+        file = dir(fullfile(cfg(2).proj_dirinput,patName,['ses-',metadata.ses_name],'ieeg','*ieeg.json'));
+        if ~isempty(file)
+            ieeg_json = jsondecode(fileread([file(1).folder '/' file(1).name]) );
+            metadata.format_info = ieeg_json.iEEGElectrodeGroups;
+        else
+            error('Missing Format annotation, and no other json from other ECoG with format annotation found')
+        end
+    else
+        metadata = look_for_format(metadata,format_idx,annots);
+    end        
     
     %% ---------- ELECTRODE MODEL ----------
     elecmodel_idx=cellfun(@(x) contains(x,{'Elec_model'}),annots(:,2));
