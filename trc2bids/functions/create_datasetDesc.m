@@ -42,6 +42,7 @@ end
 if ~isempty(ddesc_json)
     
     filename = fullfile(proj_dir,'dataset_description.json');
+    delete(filename)
     write_json(filename, ddesc_json)
     %     json_options.indent = ' ';
     %     jsonwrite(filename, mergeconfig(existing, ddesc_json), json_options)

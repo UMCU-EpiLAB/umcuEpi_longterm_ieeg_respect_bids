@@ -136,6 +136,7 @@ for j=1:size(cfg(1).ses_dir,2)
     
     if ~isempty(scans_tsv)
         
+        delete(file_name)
         write_tsv(file_name, scans_tsv);
 
         fileattrib(file_name,'-w -x','o') % make not-writable and not-executable for other users

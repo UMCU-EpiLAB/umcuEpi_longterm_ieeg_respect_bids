@@ -229,6 +229,7 @@ if ~isempty(electrodes_tsv)
         
         electrodes_tsv = bids_tsv_nan2na(electrodes_tsv);
         
+        delete(filename) % file must be deleted first before you can change the file permissions for this file.... 
         write_tsv(filename, electrodes_tsv);
         fileattrib(filename,'-w -x','o') % make not-writable and not-executable for other users
         fileattrib(filename,'+w +x','g') % make writable and executable (required for folders to open them) for group users

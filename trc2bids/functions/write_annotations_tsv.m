@@ -120,6 +120,8 @@ if ~isempty(annotation_tsv)
         if ~isempty(existing)
             ft_error('existing file is not empty');
         end
+        
+        delete(filename)
         write_tsv(filename, annotation_tsv);
         
         fileattrib(filename,'-w -x','o') % make not-writable and not-executable for other users
