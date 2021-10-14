@@ -78,18 +78,10 @@ end
 log_elec_incl = ~strcmp(tb_elecs.group,'other');
 tb_elecs = tb_elecs(log_elec_incl,:);
 if iscell(tb_elecs.x)
-<<<<<<< HEAD
-    if ischar(tb_elecs.x{1})
-        elecmatrix = [str2double(tb_elecs.x) str2double(tb_elecs.y) str2double(tb_elecs.z)];
-    else
-        elecmatrix = [vertcat(tb_elecs.x{:}) vertcat(tb_elecs.y{:}) vertcat(tb_elecs.z{:})];     
-=======
     if isstring(tb_elecs.x{1})
         elecmatrix = [str2double(tb_elecs.x) str2double(tb_elecs.y) str2double(tb_elecs.z)];
     elseif isnumeric(tb_elecs.x{1}) 
         elecmatrix = [vertcat(tb_elecs.x{:}) vertcat(tb_elecs.y{:}) vertcat(tb_elecs.z{:})];
-
->>>>>>> upstream/master
     end
 else
     elecmatrix = [tb_elecs.x tb_elecs.y tb_elecs.z];
