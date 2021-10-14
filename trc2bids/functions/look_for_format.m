@@ -88,15 +88,26 @@ if ~isempty(striploc)
         size_strippart = strlength(extractBefore(stripformatall{n},'[')) ;     
         % find which electrodes have same name, and same size (to avoid FML
         % to be part of ML, because both contains ML (RESP0991))
-        idx_strippart = ismember(strSizeCh, size_strippart) == 1 & ...
+        idx_strippart1 = ismember(strSizeCh, size_strippart) == 1 & ...
             contains(metadata.ch,extractBefore(stripformatall{n},'[')) & ...
             metadata.ch2use_included == 1;
-                
-        if sum(idx_strippart) == str2double(extractBetween(stripformatall{n},'[','x')) * str2double(extractBetween(stripformatall{n},'x',']'))
-            idx_strip(idx_strippart) = true;
+        
+        % in RESP401, all electrodes are named sOc, except 4, which is
+        % called sOC4... this lower part is added to make sure that the
+        % number of electrodes is determined correctly in this patient as
+        % well
+        idx_strippart2 = ismember(strSizeCh, size_strippart) == 1 & ...
+            contains(metadata.ch,extractBefore(stripformatall{n},'['),'IgnoreCase',true) & ...
+            metadata.ch2use_included == 1;
+
+        if sum(idx_strippart1) == str2double(extractBetween(stripformatall{n},'[','x')) * str2double(extractBetween(stripformatall{n},'x',']'))
+            idx_strip(idx_strippart1) = true;
+        elseif sum(idx_strippart2) == str2double(extractBetween(stripformatall{n},'[','x')) * str2double(extractBetween(stripformatall{n},'x',']'))
+            idx_strip(idx_strippart2) = true;
         else
             error('Error in "look_for_format.m", the number of electrodes in strip is not equal to the total of electrodes with the name %s',extractBefore(stripformatall{n},'['))
         end
+        
     end
 else
     stripformatfin = [];

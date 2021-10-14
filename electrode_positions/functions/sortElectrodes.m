@@ -24,7 +24,7 @@ function elecmatrix=sortElectrodes(tb_elecs,cfg)
 
 %% load electrodes file
 
-[data1.elecName]=spm_select(1,'image','Select image with electrodes (electrodes1.img)',[],cfg.anat_directory);
+[data1.elecName]=spm_select(1,'image','Select image with electrodes (electrodes1.img)',[],cfg.deriv_directory);
 data1.elecStruct=spm_vol(data1.elecName);
 % from structure to data matrix
 data1.elec=spm_read_vols(data1.elecStruct);

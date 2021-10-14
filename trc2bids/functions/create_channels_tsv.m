@@ -124,6 +124,8 @@ if ~isempty(channels_tsv)
         if ~isempty(existing)
             ft_error('existing file is not empty');
         end
+        
+        delete(filename)
         write_tsv(filename, channels_tsv);
         
         fileattrib(filename,'-w -x','o') % make not-writable and not-executable for other users
