@@ -65,25 +65,15 @@ try
         end
     end
     
-    %% ---------- INCLUDED ----------
+    %% ---------- INCLUDED part1 ---------- 
+    % if included-annotation is in trc-file
+    
     included_idx=cellfun(@(x) contains(x,{'Included'}),annots(:,2));
     
     if (sum(included_idx))
         metadata.ch2use_included=single_annotation(annots,'Included',ch);
         fprintf('File had Included-annotation\n')
         metadata.incl_exist = 1;
-        
-    else % if "Included" is not annotated in the ECoG, there should be a previous ECoG with annoted "Included"
-        metadata.incl_exist = 0;
-        
-        files = dir(fullfile(cfg(2).proj_dirinput,patName,['ses-',metadata.ses_name],'ieeg',[patName, '_ses-',metadata.ses_name,'_electrodes.tsv']));
-        if ~isempty(files)
-            
-            metadata = load_chanInfo(cfg,metadata,files);
-            
-        else
-            error('There is no ECoG with annotated Included')
-        end
         
     end
     
@@ -100,6 +90,27 @@ try
     else
         metadata = look_for_format(metadata,format_idx,annots);
     end        
+    
+     %% ---------- INCLUDED part2 ---------- 
+     % if included-annotation is NOT in trc-file
+     % format_info should be a variable in metadata, which is made in the
+     % previous step FORMAT
+     
+     included_idx=cellfun(@(x) contains(x,{'Included'}),annots(:,2));
+     
+     if ~(sum(included_idx)) % if "Included" is not annotated in the ECoG, there should be a previous ECoG with annoted "Included"
+         metadata.incl_exist = 0;
+         
+         files = dir(fullfile(cfg(2).proj_dirinput,patName,['ses-',metadata.ses_name],'ieeg',[patName, '_ses-',metadata.ses_name,'_electrodes.tsv']));
+         if ~isempty(files)
+             
+            metadata = load_chanInfo(cfg,metadata,files);
+            
+        else
+            error('There is no ECoG with annotated Included')
+        end
+        
+    end
     
     %% ---------- ELECTRODE MODEL ----------
     elecmodel_idx=cellfun(@(x) contains(x,{'Elec_model'}),annots(:,2));
