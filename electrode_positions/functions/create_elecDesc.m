@@ -5,7 +5,9 @@ destrieux_labels = cfg.destrieux_labels;
 DKT_labels = cfg.DKT_labels;
 
 elecdesc_json.name                  = 'Name of the electrode';
-elecdesc_json.x_y_z                 = 'X, y and z position of the electrode on the brain of the subject';
+elecdesc_json.x                     = 'x position of the electrode on the brain of the subject';
+elecdesc_json.y                     = 'y position of the electrode on the brain of the subject';
+elecdesc_json.z                     = 'z position of the electrode on the brain of the subject';
 elecdesc_json.size                  = 'Surface size in mm2 of the electrode';
 elecdesc_json.material              = 'Material of the electrode. This is platinum in most situations';
 elecdesc_json.manufacturer          = 'Manufacturer of the electrode';

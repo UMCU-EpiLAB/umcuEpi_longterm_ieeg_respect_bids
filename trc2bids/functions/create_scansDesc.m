@@ -23,7 +23,7 @@ scansdesc_json.sws_sel                  = 'selection of 10 minutes of slow wave 
 scansdesc_json.rem_sel                  = 'selection of 10 minutes with as much phasic rem sleep as possible';
 scansdesc_json.iiaw_sel                 = 'selection of 10 minutes awake resting state data';
 scansdesc_json.EI_sel                   = 'selection of 15 seconds around seizure onset (if artefacts allow: 5 second before, and 10 seconds after seizure onset)';
-
+scansdesc_json.burst_suppression        = 'period (s) with burst suppression. This is an event that can occur when admitting anaesthetics like propofol';
 if ~isempty(scansdesc_json)
     
     filename = fullfile(proj_dir,sub_label,ses_label,[sub_label,'_',ses_label,'_scans.json']);
