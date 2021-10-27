@@ -31,7 +31,7 @@ for i=1:size(cfg,2)
             participant_id = participants_tsv.participant_id;
             age = participants_tsv.age;
             session = participants_tsv.session;
-            gender = participants_tsv.gender;
+            sex = participants_tsv.sex;
         else
             partnum = 1;
         end
@@ -41,9 +41,9 @@ for i=1:size(cfg,2)
         session(partnum,1) = sesnum;
         
         if strcmpi(metadata.gender,'male') || strcmpi(metadata.gender,'female')
-            gender{partnum,1} = metadata.gender;
-        elseif strcmp(metadata.gender, 'unknown') && size(gender,1) < partnum
-            gender{partnum,1} = metadata.gender;
+            sex{partnum,1} = metadata.gender;
+        elseif strcmp(metadata.gender, 'unknown') && size(sex,1) < partnum
+            sex{partnum,1} = metadata.gender;
         end
         
         % set age of RESPect patient (comparing with current participants-table)
@@ -87,12 +87,12 @@ for i=1:size(cfg,2)
         
         participant_id_sort = participant_id(I);
         age_sort = age(I);
-        gender_sort = gender(I);
+        sex_sort = sex(I);
         session_sort = session(I);
         
         % makes a table from name, session and age
-        participants_tsv  = table(participant_id_sort, session_sort, age_sort, gender_sort, ...
-            'VariableNames',{'participant_id','session', 'age', 'gender'});
+        participants_tsv  = table(participant_id_sort, session_sort, age_sort, sex_sort, ...
+            'VariableNames',{'participant_id','session', 'age', 'sex'});
         
         % save participants.tsv
         if ~isempty(participants_tsv)
