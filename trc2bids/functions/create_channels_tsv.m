@@ -105,6 +105,25 @@ notch                               = repmat('n/a',header.Num_Chan, 1);
 status                              = ch_status;
 status_description                  = ch_status_desc;
 
+%% check whether all variables are equal of size
+sizeAll(1) = size(name,1);
+sizeAll(2) = size(type,1);
+sizeAll(3) = size(units,1);
+sizeAll(4) = size(low_cutoff,1);
+sizeAll(5) = size(high_cutoff,1);
+sizeAll(6) = size(reference,1);
+sizeAll(7) = size(group,1);
+sizeAll(8) = size(sampling_frequency,1);
+sizeAll(9) = size(notch,1);
+sizeAll(10) = size(status,1);
+sizeAll(11) = size(status_description,1);
+
+if size(unique(sizeAll),2) == 1
+    % no problem to continue with the next step! :)
+else
+    error('One of the columns in channels.tsv has a different length.')
+end
+
 %% make channels_tsv
 channels_tsv = table(name, type, units,  low_cutoff,    ...
     high_cutoff, reference, group, sampling_frequency,   ...

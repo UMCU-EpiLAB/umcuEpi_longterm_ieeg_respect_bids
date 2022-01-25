@@ -8,8 +8,7 @@ for i=1:size(cfg,2)
         
         % find session number
         splitfile = strsplit(cfg(1).ieeg_dir{i},'/');
-        containsses = splitfile{contains(splitfile,'ses')};
-        sesnum = str2double(containsses(regexp(containsses,'\d')));
+        sesnum = splitfile{contains(splitfile,'ses')};
         
         files = dir(cfg(i).proj_diroutput);
         pat_exist = [];
@@ -18,10 +17,13 @@ for i=1:size(cfg,2)
             participants_tsv = read_tsv(filename);
             
             if any(contains(participants_tsv.participant_id,deblank(header.name))) % look whether the name is already in the participants-table
-                if ~isempty(find(contains(participants_tsv.participant_id,deblank(header.name)) ==1 & participants_tsv.session==sesnum, 1)) % patient and session is already in participants-table
-                    partnum = find(contains(participants_tsv.participant_id,deblank(header.name)) ==1 & participants_tsv.session==sesnum); %find patient number and session number
+                if ~isempty(find(contains(participants_tsv.participant_id,deblank(header.name)) & ...
+                        contains(participants_tsv.session,sesnum)==1, 1)) % patient and session is already in participants-table
+                    partnum = find(contains(participants_tsv.participant_id,deblank(header.name)) & ...
+                        contains(participants_tsv.session,sesnum)==1, 1); %find patient number and session number
                     pat_exist = 1;
-                elseif isempty(find(contains(participants_tsv.participant_id,deblank(header.name)) ==1 & participants_tsv.session==sesnum, 1)) % this session is not yet in participants-table
+                elseif isempty(find(contains(participants_tsv.participant_id,deblank(header.name)) & ...
+                        contains(participants_tsv.session,sesnum)==1, 1)) % this session is not yet in participants-table
                      partnum = size(participants_tsv,1)+1;
                 end
             else % if participant is not yet in the table, the number is the last one plus one
@@ -38,7 +40,7 @@ for i=1:size(cfg,2)
         
         % set RESPect name and session number and sex
         participant_id{partnum,1}   = ['sub-' deblank(header.name)];
-        session(partnum,1) = sesnum;
+        session{partnum,1} = sesnum;
         
         if strcmpi(metadata.gender,'male') || strcmpi(metadata.gender,'female')
             sex{partnum,1} = metadata.gender;
@@ -81,9 +83,21 @@ for i=1:size(cfg,2)
         for n=1:size(participant_id,1)
             numname(n) = str2double(participant_id{n}(regexp(participant_id{n},'[0-9]')));
         end
+
+        % convert session names to numbers (a adds 0.1, b adds 0.2)
+        sesname = zeros(size(session));
+        for n=1:size(session,1)
+            sesname(n) = str2double(session{n}(regexp(session{n},'[0-9]')));
+            sespart = session{n}(regexp(session{n},'[a-z]'));
+            if strcmp(sespart,'a')
+                sesname(n) = sesname(n) +0.1;
+            elseif strcmp(sespart,'b')
+                sesname(n) = sesname(n) + 0.2;
+            end
+        end
         
         % sorts table based on RESPect number and session number
-        [~,I] = sortrows([numname,session]);
+        [~,I] = sortrows([numname,sesname]);
         
         participant_id_sort = participant_id(I);
         age_sort = age(I);

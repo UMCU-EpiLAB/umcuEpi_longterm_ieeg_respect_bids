@@ -1,5 +1,5 @@
 function metadata = load_chanInfo(cfg,metadata,files)
-
+%%
 ch = metadata.ch;
 
 fprintf('%s%s/ses-%s/ieeg/%s_ses-%s_electrodes.tsv is used.\n',cfg(2).proj_dirinput,metadata.sub_label,metadata.ses_name,metadata.sub_label,metadata.ses_name)
@@ -20,6 +20,10 @@ elec_amyg       = false(size(ch));
 elec_hipp       = false(size(ch));
 elec_lesion     = false(size(ch));
 elec_gliosis    = false(size(ch));
+elec_strip      = false(size(ch));
+elec_grid       = false(size(ch));
+elec_seeg       = false(size(ch));
+elec_depth      = false(size(ch));
 
 elec_name       = cc_elecs.name;
 
@@ -73,7 +77,16 @@ for i=1:size(ch,1)
         elec_silicon(i)     = strcmp(cc_elecs.silicon{idx},'yes');
         elec_resected(i)    = strcmp(cc_elecs.resected{idx},'yes');
         elec_edge(i)        = strcmp(cc_elecs.edge{idx},'yes');
-        
+
+        if strcmp(cc_elecs.group{idx},'grid')
+            elec_grid(i) = true;
+        elseif strcmp(cc_elecs.group{idx},'strip')
+            elec_strip(i) = true;
+        elseif strcmp(cc_elecs.group{idx},'depth')
+            elec_depth(i) = true;
+            elec_seeg(i) = true;
+        end
+
         if contains(metadata.format_info,'seeg')
             elec_screw(i)   = strcmp(cc_elecs.screw{idx},'yes');
             elec_wm(i)      = strcmp(cc_elecs.whitematter{idx},'yes');
@@ -113,10 +126,10 @@ metadata.ch2use_soz         = logical(elec_soz);
 metadata.ch2use_resected    = logical(elec_resected);
 metadata.ch2use_edge        = logical(elec_edge);
 
-metadata.idx_grid = contains(cc_elecs.group,'grid');
-metadata.idx_strip = contains(cc_elecs.group,'strip');
-metadata.idx_depth = contains(cc_elecs.group,'depth');
-metadata.idx_seeg = contains(cc_elecs.group,'depth');
+metadata.idx_grid   = logical(elec_grid);
+metadata.idx_strip  = logical(elec_strip);
+metadata.idx_depth  = logical(elec_depth);
+metadata.idx_seeg   = logical(elec_seeg);
 
 if contains(metadata.format_info,'seeg')
     
