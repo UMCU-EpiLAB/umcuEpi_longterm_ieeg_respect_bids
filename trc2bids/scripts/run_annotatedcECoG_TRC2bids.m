@@ -148,7 +148,7 @@ for pat = 1:size(pats,1)
 end
 
 % check which patients do not run without errors
-if contains(fieldnames(runpat),'status')
+if any(contains(fieldnames(runpat),'status'))
     runpat = rmfield(runpat, 'status');
 end
 
@@ -168,7 +168,8 @@ for i=1:size(runpat,2)
     end
 end
     
-sum([runpat(:).status])
+fprintf('Number of runs that did not run well: %d \n', ...
+    sum([runpat(:).status]))
 
 %% 3b) run files which gave errors again
 cfg(1).runall = 0;
@@ -210,4 +211,5 @@ for i=1:size(runpat,2)
     end
 end
     
-sum([runpat(:).status])
+fprintf('Number of runs that did not run well: %d \n', ...
+    sum([runpat(:).status]))
