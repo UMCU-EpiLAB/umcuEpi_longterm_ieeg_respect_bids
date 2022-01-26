@@ -99,13 +99,18 @@ try
             ieeg_files = dir(ieeg_dir{i});
             
             if contains([ieeg_files(:).name],ieeg_file)
-                
-                delete(fullfile(ieeg_dir{i},[ieeg_file '*.tsv']))  ;
-                delete(fullfile(ieeg_dir{i},[ieeg_file '*.json'])) ;
-                delete(fullfile(ieeg_dir{i},[ieeg_file,'*.eeg']))  ;
-                delete(fullfile(ieeg_dir{i},[ieeg_file,'*.vhdr'])) ;
-                delete(fullfile(ieeg_dir{i},[ieeg_file,'*.vmrk'])) ;
-                delete(fullfile(ieeg_dir{i},[ieeg_file,'*.TRC']))  ;
+
+                % when a task is renamed, this file is not removed here. The
+                % run is still the same, so make sure that the run should be
+                % found and those files should be removed.
+                ieeg_file_new = replace(ieeg_file,task_label,'task-*');
+
+                delete(fullfile(ieeg_dir{i},[ieeg_file_new, '*.tsv']))  ;
+                delete(fullfile(ieeg_dir{i},[ieeg_file_new, '*.json'])) ;
+                delete(fullfile(ieeg_dir{i},[ieeg_file_new, '*.eeg']))  ;
+                delete(fullfile(ieeg_dir{i},[ieeg_file_new, '*.vhdr'])) ;
+                delete(fullfile(ieeg_dir{i},[ieeg_file_new, '*.vmrk'])) ;
+                delete(fullfile(ieeg_dir{i},[ieeg_file_new, '*.TRC']))  ;
                 
             end
         end
