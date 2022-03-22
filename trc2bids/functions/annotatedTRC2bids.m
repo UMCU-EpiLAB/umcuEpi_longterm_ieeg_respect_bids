@@ -183,6 +183,9 @@ try
         
         write_participants_tsv(cfg,header,metadata)
                
+        %% write coordsystem.json (if this file already exists)
+        write_coordsystemJSON(cfg)
+
         %% write dataset descriptor
         
         for i=1:size(proj_diroutput,2)

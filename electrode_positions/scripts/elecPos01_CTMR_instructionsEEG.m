@@ -404,7 +404,7 @@ check_atlas_elec_MRI(cfg(1),tb_elecs_atlases)
 
 tb_elecs_atlases = bids_tsv_nan2na(tb_elecs_atlases);
 
-%% STEP 17: save electrodes.tsv, make electrodes descriptor, write coordsystem and add hemisphere to existing ieeg_json files
+%% STEP 17: save electrodes.tsv, make electrodes descriptor, and add hemisphere to existing ieeg_json files
 
 addpath(cfg(1).fieldtrip_folder)
 addpath(cfg(1).fieldtrip_private)
@@ -426,11 +426,7 @@ create_json_mri(replace(mri_name,'nii','json'))
 
 create_elecDesc(cfg(1).proj_diroutput,cfg(1))
 
-% 7. write coordsystem
-
-write_coordsystemJSON(cfg(1))
-
-% 8. add hemisphere to ieeg_json files
+% 7. add hemisphere to ieeg_json files
 
 D = dir(cfg(1).ieeg_directory);
 ieeg_json_filenums = contains({D(:).name},'_ieeg.json');
@@ -469,8 +465,8 @@ if~isempty(cfg(2).proj_diroutput)
     disp('Saved electrodes.tsv')
     
     % 5. write T1w.json accompanying the .nii file
-    if ~exist(fullfile(cfg(1).anat_directory, cfg(1).sub_labels{:},'_',cfg(1).ses_label),'dir')
-        mkdir(fullfile(cfg(1).anat_directory, cfg(1).sub_labels{:},'_',cfg(1).ses_label))
+    if ~exist(cfg(1).anat_directory,'dir')
+        mkdir(fullfile(cfg(1).anat_directory))
     end
     mri_name = [cfg(1).anat_directory, cfg(1).sub_labels{:},'_',cfg(1).ses_label,'_rec-deface_T1w.nii'];
     create_json_mri(replace(mri_name,'nii','json'))
