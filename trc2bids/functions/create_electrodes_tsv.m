@@ -134,7 +134,7 @@ if ~isempty(electrodes_tsv)
                     for elec = 1:size(electrodes_tsv,1)
                         
                         if metadata.ch2use_included(elec) == 1
-                            idx_elec = contains(cc_elec_old.name,electrodes_tsv.name{elec},'IgnoreCase',true);
+                            idx_elec = strcmpi(cc_elec_old.name,electrodes_tsv.name{elec});
                             
                             if sum(idx_elec) == 1
                                 electrodes_tsv.x{elec} = cc_elec_old.x(idx_elec);
