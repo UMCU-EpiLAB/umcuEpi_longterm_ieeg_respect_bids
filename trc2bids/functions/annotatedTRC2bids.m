@@ -70,7 +70,7 @@ try
         task_label    = strcat('task-',strtrim(metadata.task_name),' ','');
         metadata.hour = header.hour; metadata.min = header.min; metadata.sec = header.sec; % this is needed for acq_time in scans.tsv
         
-        if ~contains(task_label,'SPES') % DvB: saves SPES in CCEP repository, so this 
+        if ~contains(task_label,'SPESclin') % DvB: saves SPES in CCEP repository, so this 
             proj_diroutput{1} = proj_diroutput_temp{1};
             cfg(2).proj_diroutput = [];
         else
@@ -183,8 +183,10 @@ try
         
         write_participants_tsv(cfg,header,metadata)
                
-        %% write coordsystem.json (if this file already exists)
-        write_coordsystemJSON(cfg)
+         %% write coordsystem.json (if this file already exists)
+         % this is relocated to when the electrode positions are
+         % determined.
+%         write_coordsystemJSON(cfg)
 
         %% write dataset descriptor
         
