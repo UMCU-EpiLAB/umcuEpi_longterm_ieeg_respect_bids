@@ -194,14 +194,8 @@ if ~isempty(electrodes_tsv)
                     if any(contains(fieldnames(cc_elec_old),'Destrieux'))
                         electrodes_tsv.Destrieux_label       = cc_elec_old.Destrieux_label;
                         electrodes_tsv.Destrieux_label_text  = cc_elec_old.Destrieux_label_text;
-                        
-                        if contains(fieldnames(cc_elec_old),'DKTatlas_label') % this is the old naming, inconsistent with electrodes.json
-                            electrodes_tsv.DKT_label             = cc_elec_old.DKTatlas_label;
-                            electrodes_tsv.DKT_label_text        = cc_elec_old.DKTatlas_label_text;
-                        elseif contains(fieldnames(cc_elec_old),'DKT_label')
-                            electrodes_tsv.DKT_label             = cc_elec_old.DKT_label;
-                            electrodes_tsv.DKT_label_text        = cc_elec_old.DKT_label_text;
-                        end
+                        electrodes_tsv.DKT_label             = cc_elec_old.DKT_label;
+                        electrodes_tsv.DKT_label_text        = cc_elec_old.DKT_label_text;
                         electrodes_tsv.Wang_label            = cc_elec_old.Wang_label;
                         electrodes_tsv.Wang_label_text       = cc_elec_old.Wang_label_text;
                         electrodes_tsv.Benson_label          = cc_elec_old.Benson_label;
@@ -214,6 +208,9 @@ if ~isempty(electrodes_tsv)
                 
             end
             
+            electrodes_tsv = bids_tsv_nan2na(electrodes_tsv);
+            cc_elec_old = bids_tsv_nan2na(cc_elec_old);
+
             struct1 = table2struct(cc_elec_old);
             struct2 = table2struct(electrodes_tsv);
             if ~isequal(struct1,struct2)
