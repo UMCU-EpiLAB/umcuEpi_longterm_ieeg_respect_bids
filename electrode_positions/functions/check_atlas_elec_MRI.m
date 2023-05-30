@@ -40,13 +40,13 @@ fig_pos = {'back','back_left','back_right',...
     'top','top_back','top_front','top_left','top_right'};
 
 for i=1:size(cfg.hemisphere,2)
-    
+
     % gifti file name:
     dataGiiName = fullfile(cfg.surface_directory,...
         [cfg.sub_labels{:} '_' cfg.ses_label '_T1w_pial.' cfg.hemisphere{i} '.surf.gii']);
     % load gifti:
     g.(cfg.hemisphere{i}) = gifti(dataGiiName);
-    
+
     % surface labels
     if strcmp(cfg.atlas,'DKT')
         surface_labels_name = fullfile(cfg.freesurfer_directory,'label',...
@@ -62,7 +62,7 @@ for i=1:size(cfg.hemisphere,2)
     for kk = 1:size(colortable.table,1) % 76 are labels
         vert_label.(cfg.hemisphere{i})(label==colortable.table(kk,5)) = kk;
     end
-    
+
     % make a colormap for the labels
     cmap = colortable.table(:,1:3)./256;
 end
@@ -80,7 +80,9 @@ tb_elecs = tb_elecs(log_elec_incl,:);
 if iscell(tb_elecs.x)
     if isstring(tb_elecs.x{1})
         elecmatrix = [str2double(tb_elecs.x) str2double(tb_elecs.y) str2double(tb_elecs.z)];
-    elseif isnumeric(tb_elecs.x{1}) 
+    elseif ischar(tb_elecs.x{1})
+        elecmatrix = [str2double(tb_elecs.x) str2double(tb_elecs.y) str2double(tb_elecs.z)];
+    elseif isnumeric(tb_elecs.x{1})
         elecmatrix = [vertcat(tb_elecs.x{:}) vertcat(tb_elecs.y{:}) vertcat(tb_elecs.z{:})];
     end
 else
@@ -90,19 +92,19 @@ end
 %% figure with rendering for different viewing angles
 for k = 1:size(v_dirs,1) % loop across viewing angles
     v_d = v_dirs(k,:);
-    
+
     figure('Name',fig_pos{k},'units','normalized','position',[0.01 0.01 0.9 0.9],'color',[1 1 1]);
-    
+
     subplot('position', [0.05 0.25 0.9 0.7])
-    
+
     for i=1:size(cfg.hemisphere,2)
-        
+
         if i == size(cfg.hemisphere,2)
             setLight = 1;
         else
             setLight = 0;
         end
-        
+
         if strcmp(cfg.view_atlas,'yes')
             ecog_RenderGiftiLabels(g.(cfg.hemisphere{i}),vert_label.(cfg.hemisphere{i}),cmap,colortable.struct_names,setLight)
         else
@@ -110,9 +112,9 @@ for k = 1:size(v_dirs,1) % loop across viewing angles
         end
     end
     ecog_ViewLight(v_d(1),v_d(2)) % change viewing angle
-    
+
     if strcmp(cfg.view_elec,'yes')
-        
+
         if strcmp(cfg.elec_offset,'yes')
             % make sure electrodes pop out
             a_offset = 0.1*max(abs(elecmatrix(:,1)))*[cosd(v_d(1)-90)*cosd(v_d(2)) sind(v_d(1)-90)*cosd(v_d(2)) sind(v_d(2))];
@@ -120,29 +122,30 @@ for k = 1:size(v_dirs,1) % loop across viewing angles
         else
             els = elecmatrix;
         end
-        
+
         % add electrode numbers
         if strcmp(cfg.show_labels,'yes')
             ecog_Label(els,tb_elecs.name,50,12) % [electrodes, electrode labels, MarkerSize, FontSize]
-            
-            % add all electrodes with black dots
-            if strcmp(cfg(1).view_atlas,'yes')
-                ccep_el_add(els,[0.1 0.1 0.1],40) % [electrodes, MarkerColor, MarkerSize]
-            else
-                % add electrodes with yelllow dots
-                ccep_el_add(els,[1 1 0],40) % [electrodes, MarkerColor, MarkerSize]
-                
-            end
         end
+
+        % add all electrodes with black dots
+        if strcmp(cfg(1).view_atlas,'yes')
+            ccep_el_add(els,[0.1 0.1 0.1],40) % [electrodes, MarkerColor, MarkerSize]
+        else
+            % add electrodes with yelllow dots
+            ccep_el_add(els,[1 1 0],40) % [electrodes, MarkerColor, MarkerSize]
+        end
+
+
     end
-    
+
     set(gcf,'PaperPositionMode','auto')
-    
+
     if strcmp(cfg.save_fig, 'yes')
         if ~exist(fullfile(cfg(1).deriv_directory,'rendering'),'dir')
-           mkdir( fullfile(cfg(1).deriv_directory,'rendering'))
+            mkdir( fullfile(cfg(1).deriv_directory,'rendering'))
         end
-        
+
         saveas(gcf,fullfile(cfg(1).deriv_directory,'rendering',[fig_pos{k},'.png']))
     end
 end
