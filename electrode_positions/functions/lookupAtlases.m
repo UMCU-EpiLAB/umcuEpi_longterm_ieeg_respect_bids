@@ -170,7 +170,7 @@ for elec = 1:size(elecmatrix,1) % loop across electrodes
     
     hemisphere = lower(tb_elecs.hemisphere{elec});
     
-    if strcmp(hemisphere,'r') || strcmp(hemisphere,'l') % if hemisphere is not n/a (in case of ECG electrode for example)
+    if strcmp(hemisphere,'r') || strcmp(hemisphere,'l')  % if hemisphere is not n/a (in case of ECG electrode for example)
         % dist from electrode to vertices
         b = sqrt(sum((g.(hemisphere).vertices-repmat(elecmatrix(elec,:),size(g.(hemisphere).vertices,1),1)).^2,2));
         [B,I] = sort(b,'ascend'); % sort distances from electrode to vertices with minimum on top
@@ -220,7 +220,7 @@ for elec = 1:size(elecmatrix,1) % loop across electrodes
     
     %%%% WANG:
     % take the mode of the labels within X mm
-    if exist('vert_label_Wang','var')
+    if exist('vert_label_Wang','var') && ~isnan(B(1))
         area_of_electrode = mode(vert_label_Wang.(hemisphere)(b<electrode_to_vertex_dist));
         % put the labels (vert_label) back in the matrix
         Wang_label(elec,1) = area_of_electrode;
@@ -236,7 +236,7 @@ for elec = 1:size(elecmatrix,1) % loop across electrodes
     
     %%%% BENSON AREA:
     % take the mode of the labels within X mm
-    if exist('vert_label_Benson','var')
+    if exist('vert_label_Benson','var') && ~isnan(B(1))
         area_of_electrode = mode(vert_label_Benson.(hemisphere)(b<electrode_to_vertex_dist));
         % put the labels (vert_label) back in the matrix
         Benson_label(elec,1) =  area_of_electrode;

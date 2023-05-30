@@ -1,6 +1,8 @@
 function write_scans_tsv(cfg,metadata,annotation_tsv,fscans_name,fieeg_json_name)
 %%
 f = replace(fieeg_json_name,'.json','.eeg');
+run_temp = extractBetween(f,'run-','_ieeg');
+run = ['run-' run_temp{1}];
 
 for j=1:size(cfg(1).ses_dir,2)
     file_name = fullfile(cfg(1).ses_dir{j},fscans_name);
@@ -11,8 +13,11 @@ for j=1:size(cfg(1).ses_dir,2)
         % read existing scans-file
         scans_tsv = read_tsv(file_name);
         
-        if any(contains(scans_tsv.filename,f))
-            scansnum = find(contains(scans_tsv.filename,f) ==1);
+        % search where this specific run is present in scans.tsv so that,
+        % even when a task is named differently, the same scan is described
+        % and no extra names are added to this scans.tsv
+        if any(contains(scans_tsv.filename,run))
+            scansnum = find(contains(scans_tsv.filename,run) ==1);
         else
             scansnum = size(scans_tsv,1)+1;
         end

@@ -274,9 +274,10 @@ elseif contains(json.iEEGElectrodeGroups,'ecog','IgnoreCase',1) || contains(json
                     num_elecs,... % matrix indices (rows) in elecmatrix, e.g. 1:64 is for grid C1-C64
                     [cfg(1).deriv_directory, cfg(1).sub_labels{:},'_',cfg(1).ses_label,'_electrodes_temp.mat'],... % file that contains elecmatrix
                     [cfg(1).deriv_directory, cfg(1).sub_labels{:},'_',cfg(1).hemisphere{1},'_surface',num2str(k),'_',num2str(settings_hull(1)),'_0',num2str(settings_hull(2)*10),'.img'],... % hull we just created
-                    [cfg(1).deriv_directory, cfg(1).sub_labels{:},'_',cfg(1).hemisphere{1},'_surface',num2str(k),'_',num2str(settings_hull(1)),'_0',num2str(settings_hull(2)*10),'.img'],... % hull we just created instead of T1 file
+                    [cfg(1).deriv_directory, cfg(1).sub_labels{:},'_',cfg(1).hemisphere{1},'_surface',num2str(k),'_',num2str(settings_hull(1)),'_0',num2str(settings_hull(2)*10),'.img'],... % hull we just created
                     cfg(1).deriv_directory);
-                %                      [cfg(1).anat_directory, cfg(1).sub_labels{:},'_',cfg(1).ses_label,'_rec-deface_T1w.nii'],... % T1 file (mr.img for same image space with electrode positions)
+%          [cfg(1).anat_directory, cfg(1).sub_labels{:},'_',cfg(1).ses_label,'_rec-deface_T1w.nii'],... % T1 file (mr.img for same image space with electrode positions)
+
                 % saves automatically a matrix with projected electrode positions and an image
                 % with projected electrodes
                 % saves as electrodes_onsurface_filenumber_inputnr2
@@ -393,8 +394,8 @@ cfg(1).change_size = 'no';
 cfg(1).change_color = 'no';
 cfg(1).view_atlas ='yes';
 cfg(1).elec_offset = 'yes';
-% cfg(1).atlas = 'Destrieux'; % [DKT/Destrieux]
-cfg(1).atlas = 'DKT'; % [DKT/Destrieux]
+cfg(1).atlas = 'Destrieux'; % [DKT/Destrieux]
+% cfg(1).atlas = 'DKT'; % [DKT/Destrieux]
 cfg(1).view_elec ='yes';
 cfg(1).save_fig = 'no';
 
@@ -404,7 +405,7 @@ check_atlas_elec_MRI(cfg(1),tb_elecs_atlases)
 
 tb_elecs_atlases = bids_tsv_nan2na(tb_elecs_atlases);
 
-%% STEP 17: save electrodes.tsv, make electrodes descriptor, write coordsystem and add hemisphere to existing ieeg_json files
+%% STEP 17: save electrodes.tsv, make electrodes descriptor, and add hemisphere to existing ieeg_json files
 
 addpath(cfg(1).fieldtrip_folder)
 addpath(cfg(1).fieldtrip_private)
@@ -427,9 +428,9 @@ create_json_mri(replace(mri_name,'nii','json'))
 create_elecDesc(cfg(1).proj_diroutput,cfg(1))
 
 % 7. write coordsystem
-
+    
 write_coordsystemJSON(cfg(1))
-
+ 
 % 8. add hemisphere to ieeg_json files
 
 D = dir(cfg(1).ieeg_directory);
@@ -469,8 +470,8 @@ if~isempty(cfg(2).proj_diroutput)
     disp('Saved electrodes.tsv')
     
     % 5. write T1w.json accompanying the .nii file
-    if ~exist(fullfile(cfg(1).anat_directory, cfg(1).sub_labels{:},'_',cfg(1).ses_label),'dir')
-        mkdir(fullfile(cfg(1).anat_directory, cfg(1).sub_labels{:},'_',cfg(1).ses_label))
+    if ~exist(cfg(1).anat_directory,'dir')
+        mkdir(fullfile(cfg(1).anat_directory))
     end
     mri_name = [cfg(1).anat_directory, cfg(1).sub_labels{:},'_',cfg(1).ses_label,'_rec-deface_T1w.nii'];
     create_json_mri(replace(mri_name,'nii','json'))
