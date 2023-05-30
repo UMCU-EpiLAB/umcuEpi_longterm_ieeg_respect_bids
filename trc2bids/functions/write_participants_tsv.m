@@ -42,10 +42,10 @@ for i=1:size(cfg,2)
         participant_id{partnum,1}   = ['sub-' deblank(header.name)];
         session{partnum,1} = sesnum;
         
-        if strcmpi(metadata.gender,'male') || strcmpi(metadata.gender,'female')
-            sex{partnum,1} = metadata.gender;
-        elseif strcmp(metadata.gender, 'unknown') && size(sex,1) < partnum
-            sex{partnum,1} = metadata.gender;
+        if strcmpi(strip(metadata.gender),'male') || strcmpi(strip(metadata.gender),'female')
+            sex{partnum,1} = strip(metadata.gender);
+        elseif strcmp(strip(metadata.gender), 'unknown') && size(sex,1) < partnum
+            sex{partnum,1} = strip(metadata.gender);
         end
         
         % set age of RESPect patient (comparing with current participants-table)
