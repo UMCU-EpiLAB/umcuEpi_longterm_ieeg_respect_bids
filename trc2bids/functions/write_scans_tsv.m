@@ -144,8 +144,8 @@ for j=1:size(cfg(1).ses_dir,2)
         delete(file_name)
         write_tsv(file_name, scans_tsv);
 
-        fileattrib(file_name,'-w -x','o') % make not-writable and not-executable for other users
-        fileattrib(file_name,'+w +x','g') % make writable and executable (required for folders to open them) for group users
+        %fileattrib(file_name,'-w -x','o') % make not-writable and not-executable for other users
+        %fileattrib(file_name,'+w +x','g') % make writable and executable (required for folders to open them) for group users
 
     end
 end

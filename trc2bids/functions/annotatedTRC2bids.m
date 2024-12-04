@@ -88,6 +88,8 @@ try
         cfg(1).ses_dir  = ses_dir;
         cfg(1).ieeg_dir = ieeg_dir;
         
+%        warning('off', 'MATLAB:MKDIR:OSError'); % Turn warning off
+
         for i=1:size(sub_dir,2)
             mydirMaker(sub_dir{i});
             mydirMaker(ses_dir{i});
@@ -141,19 +143,20 @@ try
         
         convertTRC2brainvision(cfg,ieeg_dir, fieeg_name)
         
+        % 
         % correct the rights after writing .vhdr, .eeg and .vmrk
         for i = 1:size(ieeg_dir,2)
             dirname = replace(fullfile(ieeg_dir{i},fieeg_name),'.TRC','.vhdr');
-            fileattrib(dirname,'-w -x','o') % make not-writable and not-executable for other users
-            fileattrib(dirname,'+w +x','g') % make writable and executable (required for folders to open them) for group users
+            %fileattrib(dirname,'-w -x','o') % make not-writable and not-executable for other users
+            %fileattrib(dirname,'+w +x','g') % make writable and executable (required for folders to open them) for group users
             
             dirname = replace(fullfile(ieeg_dir{i},fieeg_name),'.TRC','.eeg');
-            fileattrib(dirname,'-w -x','o') % make not-writable and not-executable for other users
-            fileattrib(dirname,'+w +x','g') % make writable and executable (required for folders to open them) for group users
+            %fileattrib(dirname,'-w -x','o') % make not-writable and not-executable for other users
+            %fileattrib(dirname,'+w +x','g') % make writable and executable (required for folders to open them) for group users
         
             dirname = replace(fullfile(ieeg_dir{i},fieeg_name),'.TRC','.vmrk');
-            fileattrib(dirname,'-w -x','o') % make not-writable and not-executable for other users
-            fileattrib(dirname,'+w +x','g') % make writable and executable (required for folders to open them) for group users
+            %fileattrib(dirname,'-w -x','o') % make not-writable and not-executable for other users
+            %fileattrib(dirname,'+w +x','g') % make writable and executable (required for folders to open them) for group users
         end
 
         %% create json sidecar for ieeg file
@@ -240,8 +243,8 @@ if exist(dirname, 'dir')
 else
     mkdir(dirname)
     
-    fileattrib(dirname,'-w -x','o') % make not-writable and not-executable for other users
-    fileattrib(dirname,'+w +x','g') % make writable and executable (required for folders to open them) for group users
+    %fileattrib(dirname,'-w -x','o') % make not-writable and not-executable for other users, for linux system only 
+    %fileattrib(dirname,'+w +x','g') % make writable and executable (required for folders to open them) for group users for linux system only 
 
 end
 
