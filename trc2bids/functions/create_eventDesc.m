@@ -38,7 +38,7 @@ if ~isempty(edesc_json)
     delete(filename)
     write_json(filename, edesc_json)
     
-    fileattrib(filename,'-w -x','o') % make not-writable and not-executable for other users
-    fileattrib(filename,'+w +x','g') % make writable and executable (required for folders to open them) for group users
+    %fileattrib(filename,'-w -x','o') % make not-writable and not-executable for other users
+    %fileattrib(filename,'+w +x','g') % make writable and executable (required for folders to open them) for group users
 
 end

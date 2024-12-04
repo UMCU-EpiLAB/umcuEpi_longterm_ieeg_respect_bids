@@ -147,8 +147,8 @@ if ~isempty(channels_tsv)
         delete(filename)
         write_tsv(filename, channels_tsv);
         
-        fileattrib(filename,'-w -x','o') % make not-writable and not-executable for other users
-        fileattrib(filename,'+w +x','g') % make writable and executable (required for folders to open them) for group users
+        %fileattrib(filename,'-w -x','o') % make not-writable and not-executable for other users
+        %fileattrib(filename,'+w +x','g') % make writable and executable (required for folders to open them) for group users
 
     end
 end

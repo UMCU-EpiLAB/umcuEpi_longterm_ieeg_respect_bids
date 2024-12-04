@@ -4,7 +4,6 @@
 
 % Dorien van Blooijs, Willemiek Zweiphenning 2019
 
-
 %% patient characteristics
 
 clear cfg
@@ -32,7 +31,7 @@ for i=1:size(files,1)
        
         cfg(1).filename = [cfg(1).pathname,files(i).name];
         
-        pathsplit = strsplit(cfg(1).pathname,{'/'});
+        pathsplit = strsplit(cfg(1).pathname,{'\'}); 
         patient = pathsplit{end-1};
         filesplit = strsplit(files(i).name,{'_','.TRC'});
         file = filesplit{end-1};
@@ -56,7 +55,7 @@ for i=1:size(runall,2)
     if runall(i).status ==1
         cfg(1).filename = [cfg(1).pathname,runall(i).file];
         
-        pathsplit = strsplit(cfg(1).pathname,{'/'});
+        pathsplit = strsplit(cfg(1).pathname,{'\'}); 
         patient = pathsplit{end-1};
         filesplit = strsplit(runall(i).file,{'_','.TRC'});
         file = filesplit{end-1};
@@ -88,7 +87,7 @@ end
 
 cfg(1).filename = [cfg(1).pathname,fileinput];
 
-pathsplit = strsplit(cfg(1).pathname,{'/'});
+pathsplit = strsplit(cfg(1).pathname,{'\'}); 
 patient = pathsplit{end-1};
 filesplit = strsplit(fileinput,{'_','.TRC'});
 file = filesplit{end-1};
@@ -111,7 +110,7 @@ for pat = 1:size(pats,1)
     
     if contains(pats(pat).name,'PAT')
         n=1;
-        cfg(1).pathname = [fullfile(cfg(1).proj_dirinput,pats(pat).name),'/'];
+        cfg(1).pathname = [fullfile(cfg(1).proj_dirinput,pats(pat).name),'\']; 
         
         runpat(pat).pat = pats(pat).name;
 
@@ -128,7 +127,7 @@ for pat = 1:size(pats,1)
                 
                 cfg(1).filename = [cfg(1).pathname,files(i).name];
                 
-                pathsplit = strsplit(cfg(1).pathname,{'/'});
+                pathsplit = strsplit(cfg(1).pathname,{'\'}); 
                 patient = pathsplit{end-1};
                 filesplit = strsplit(files(i).name,{'_','.TRC'});
                 file = filesplit{end-1};
