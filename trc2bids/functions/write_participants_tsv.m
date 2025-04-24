@@ -7,7 +7,7 @@ for i=1:size(cfg,2)
         filename = fullfile(cfg(i).proj_diroutput,'participants.tsv');
         
         % find session number
-        splitfile = strsplit(cfg(1).ieeg_dir{i},'/');
+        splitfile = strsplit(cfg(1).ieeg_dir{i},'\');
         sesnum = splitfile{contains(splitfile,'ses')};
         
         files = dir(cfg(i).proj_diroutput);

@@ -69,20 +69,21 @@ end
 
 %% strip eventsannots into separate variables
 if isempty(eventsannots.s_start)
-    s_start         = 'n/a';
-    s_end           = 'n/a';
-    duration        = 'n/a';
-    type            = 'n/a';
-    sub_type        = 'n/a';
-    ch_name_on      = 'n/a';
-    ch_name_off     = 'n/a';
-    samp_start      = 'n/a';
-    samp_end        = 'n/a';
-    stim_type       = 'n/a';
-    site_name       = 'n/a';
-    stim_cur        = 'n/a';
-    notes           = 'n/a';
-    freq            = 'n/a';
+    s_start         = "n/a";
+    s_end           = "n/a";
+    duration        = "n/a";
+    type            = "n/a";
+    sub_type        = "n/a";
+    ch_name_on      = "n/a";
+    ch_name_off     = "n/a";
+    samp_start      = "n/a";
+    samp_end        = "n/a";
+    stim_type       = "n/a";
+    site_name       = "n/a";
+    stim_cur        = "n/a";
+    notes           = "n/a";
+    freq            = "n/a";
+    pulsewidth      = "n/a";
 else
     s_start         = eventsannots.s_start;
     s_end           = eventsannots.s_end;

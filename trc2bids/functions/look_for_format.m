@@ -168,7 +168,8 @@ if ~isempty(seegloc)
         if sum(idx_seegpart) == str2double(extractBetween(seegformatall{n},'[','x')) * str2double(extractBetween(seegformatall{n},'x',']'))
             idx_seeg(idx_seegpart) = true;
         else
-            error('Error in "look_for_format.m", the number of electrodes in seeg is not equal to the total of electrodes with the name %s',extractBefore(seegformatall{n},'['))
+            idx_seeg(idx_seegpart) = true; % was removed and an error
+            warning('Error in "look_for_format.m", the number of electrodes in seeg is not equal to the total of electrodes with the name %s',extractBefore(seegformatall{n},'['))
         end
     end
 
