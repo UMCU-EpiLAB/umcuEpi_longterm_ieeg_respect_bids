@@ -18,6 +18,7 @@
 %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 % DvB - made it compatible with BIDS electrodes.tsv September 2019
+% SJ & IH - made it compatible for windows 2025
 
 % This script has a part that should be run in a linux terminal, and part
 % that can be run in matlab. The parts that should be run in a linux
@@ -30,7 +31,7 @@ close all
 cfg(1).sub_labels = {['sub-' input('Patient number (RESPXXXX)/(REC2StimXX)/(PRIOSXX): ','s')]};
 cfg(1).no_fieldtrip = 'yes';
 cfg(1).mode = 'electrodeposition_preMRI';
-% left!
+
 
 % set paths
 cfg = setLocalDataPath(cfg);
@@ -43,7 +44,7 @@ addpath(genpath(spmPath));
 
 % householding
 clear rootPath splitPath spmPath indexSpmPath
-%% GIULIA DID MANUALLY STEP 3: defacing MRI - RUN IN LINUX TERMINAL!- check in windows
+%% STEP 3: defacing MRI - RUN IN LINUX TERMINAL- check in windows
 % run this part in matlab with 'ctrl enter', this will show the text to copy in the terminal 
 clc
 
@@ -71,7 +72,7 @@ fprintf('\n ----- OPEN LINUX TERMINAL, RUN LINE BELOW IN LINUX TERMINAL -----\n 
 
 fprintf('\n ----- OPEN MRICRON in windows, OPEN DEFACED MRI TO CHECK DEFACING ----- \n mricron \n')
 
-%% STEP 4: run freesurfer to segment brain add Destrieux atlases - RUN IN LINUX TERMINAL!
+%% STEP 4: run freesurfer to segment brain add Destrieux atlases - RUN IN LINUX TERMINAL
 % run this part in matlab with 'ctrl enter', this will show the text to copy in the terminal 
 clc
 
@@ -100,7 +101,6 @@ else
     mkdir(cfg(1).freesurfer_directory)
 end
 
-% export SUBJECTS_DIR= /home/susanne/Desktop/
 
 % Right click in the folder with the original MRI and start Linux terminal.
 % Copy the printed lines in the command window into the linux terminal:
@@ -119,7 +119,7 @@ fprintf('\n ----- RUN LINE BELOW IN LINUX TERMINAL ----- \nrecon-all -autorecon-
 % This takes up to 12 hours to run! In the end, you will see a subject
 % folder in the freesurfer folder.
 
-%% ONLY FOR ECOG???! STEP 5: generate surface (The Hull) to project electrodes to - RUN IN LINUX TERMINAL
+%% STEP 5: generate surface (The Hull) to project electrodes to - RUN IN LINUX TERMINAL
 % run this part in matlab with 'ctrl enter', this will show the text to copy in the terminal 
 clc
 % only for ECoG, because this is necessary to correct for brain-shift.
@@ -133,7 +133,7 @@ clc
 % Copy the printed lines in the command window into the linux terminal:
 fprintf('\n ----- OPEN %smri ----- \n ----- CLICK WITH RIGHT MOUSE AND OPEN LINUX TERMINAL ----- \n ----- RUN LINE BELOW IN LINUX TERMINAL ----- \nmri_convert ribbon.mgz t1_class.nii\n',cfg(1).freesurfer_directory_linux)
 
-%% ONLY FOR ECOG???! STEP 6: Create the hull - matlab
+%% STEP 6: Create the hull - matlab
 if ~exist(cfg(1).deriv_directory,'dir')
     mkdir(cfg(1).deriv_directory)
 end
@@ -150,7 +150,7 @@ for i=1:size(cfg(1).hemisphere,2)
     % the hull is saved as sub-RESPXXXX_surface1_13_03.img
 end
 
-%% ONLY FOR ECOG???! STEP 7: check hull - mricron
+%% STEP 7: check hull - mricron
 % run this part in matlab with 'ctrl enter', this will show the text to copy in the terminal 
 % type 'mricron'
 % load the MRI
@@ -171,10 +171,6 @@ ctmr
 % view result
 % save image: saves as nifti hdr and img files
 % this is saved as electrodes1.hdr and electrodes1.img
-
-% vragen: tel je de elektroden? Wat gebruik je om de elektroden te vinden?
-% 
-% open het bestand van irene al geklikt
 
 %% STEP 9: sort unprojected electrodes - matlab
 
@@ -368,7 +364,6 @@ end
 
 %fprintf('\n  ----- RUN LINE BELOW IN LINUX TERMINAL ----- \n su  \n  \n ----- RUN LINE BELOW IN LINUX TERMINAL ----- \n mri_deface %s_%s_T1w.nii %s  %s %s_%s_rec-deface_T1w.nii\n',...
 
-%% T/m step 13 runt, vanaf 14 checken !!!
 %% STEP 14: Convert the .gii coordinates to the MRI native space - matlab
 
 for i=1:size(cfg(1).hemisphere,2)
