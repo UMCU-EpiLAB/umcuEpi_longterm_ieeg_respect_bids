@@ -18,6 +18,7 @@
 %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 % DvB - made it compatible with BIDS electrodes.tsv September 2019
+% SJ & IH - made it compatible for windows 2025
 
 % This script has a part that should be run in a linux terminal, and part
 % that can be run in matlab. The parts that should be run in a linux
@@ -31,10 +32,19 @@ cfg(1).sub_labels = {['sub-' input('Patient number (RESPXXXX)/(REC2StimXX)/(PRIO
 cfg(1).no_fieldtrip = 'yes';
 cfg(1).mode = 'electrodeposition_preMRI';
 
+
 % set paths
 cfg = setLocalDataPath(cfg);
 
-%% STEP 3: defacing MRI - RUN IN LINUX TERMINAL!
+rootPath = matlab.desktop.editor.getActiveFilename;
+splitPath = regexp(rootPath,'\','split');
+indexSpmPath = find(contains(splitPath,'umcuEpi_longterm_ieeg_respect_bids'));
+spmPath = fullfile(splitPath{1:indexSpmPath-1},'spm12');
+addpath(genpath(spmPath));
+
+% householding
+clear rootPath splitPath spmPath indexSpmPath
+%% STEP 3: defacing MRI - RUN IN LINUX TERMINAL- check in windows
 % run this part in matlab with 'ctrl enter', this will show the text to copy in the terminal 
 clc
 
@@ -46,8 +56,10 @@ fprintf('\n ----- RENAME T1WEIGHTED MRI TO: ----- \n %s_%s_T1w.nii\n',...
 
 % Right click in the folder with the original MRI and start Linux terminal.
 % Copy the printed lines in the command window to deface the MRI in the linux terminal:
-fprintf('\n ----- OPEN %ssourcedata/%s/%s/anat/  ----- \n ----- CLICK WITH RIGHT MOUSE AND OPEN LINUX TERMINAL -----\n ----- RUN LINE BELOW IN LINUX TERMINAL ----- \n mri_deface %s_%s_T1w.nii %s  %s %s_%s_rec-deface_T1w.nii\n',...
-    cfg(1).proj_diroutput,...
+
+
+fprintf('\n ----- OPEN LINUX TERMINAL, RUN LINE BELOW IN LINUX TERMINAL -----\n cd %ssourcedata/%s/%s/anat/ \n ----- RUN LINE BELOW IN LINUX TERMINAL ----- \n su  \n password: Dr.House \n ----- RUN LINE BELOW IN LINUX TERMINAL ----- \n mri_deface %s_%s_T1w.nii %s  %s %s_%s_rec-deface_T1w.nii\n',...
+    cfg(1).proj_diroutput_linux,...
     cfg(1).sub_labels{:},...
     cfg(1).ses_label,...
     cfg(1).sub_labels{:},...
@@ -58,9 +70,9 @@ fprintf('\n ----- OPEN %ssourcedata/%s/%s/anat/  ----- \n ----- CLICK WITH RIGHT
     cfg(1).ses_label);
 % this takes around 5 minutes
 
-fprintf('\n ----- RUN LINE BELOW IN LINUX TERMINAL, OPEN DEFACED MRI TO CHECK DEFACING ----- \n mricron \n')
+fprintf('\n ----- OPEN MRICRON in windows, OPEN DEFACED MRI TO CHECK DEFACING ----- \n mricron \n')
 
-%% STEP 4: run freesurfer to segment brain add Destrieux atlases - RUN IN LINUX TERMINAL!
+%% STEP 4: run freesurfer to segment brain add Destrieux atlases - RUN IN LINUX TERMINAL
 % run this part in matlab with 'ctrl enter', this will show the text to copy in the terminal 
 clc
 
@@ -89,24 +101,25 @@ else
     mkdir(cfg(1).freesurfer_directory)
 end
 
+
 % Right click in the folder with the original MRI and start Linux terminal.
 % Copy the printed lines in the command window into the linux terminal:
-fprintf('\n ----- OPEN %ssourcedata/%s/%s/anat/  ----- \n ----- CLICK WITH RIGHT MOUSE AND OPEN LINUX TERMINAL ----- \n ----- RUN LINE BELOW IN LINUX TERMINAL ----- \nexport SUBJECTS_DIR=%s\n',...
-    cfg(1).proj_diroutput,...
+fprintf('\n ----- OPEN LINUX TERMINAL, RUN LINE BELOW IN LINUX TERMINAL -----\n  cd %ssourcedata/%s/%s/anat/   \n -----  RUN LINE BELOW IN LINUX TERMINAL ----- \nexport SUBJECTS_DIR=%s\n',...
+    cfg(1).proj_diroutput_linux,...
     cfg(1).sub_labels{:},...
     cfg(1).ses_label,...
-    cfg(1).freesurfer_directory)
+    cfg(1).freesurfer_directory_linux)
 % Copy the printed lines in the command window to run Freesurfer in the linux terminal:
 fprintf('\n ----- RUN LINE BELOW IN LINUX TERMINAL ----- \nrecon-all -autorecon-all -s %s -i %s%s_%s_rec-deface_T1w.nii -cw256\n',...
     cfg(1).sub_labels{:},...
-    cfg(1).anat_directory,...
+    cfg(1).anat_directory_linux,...
     cfg(1).sub_labels{:},...
     cfg(1).ses_label)
 
 % This takes up to 12 hours to run! In the end, you will see a subject
 % folder in the freesurfer folder.
 
-%% STEP5: generate surface (The Hull) to project electrodes to - RUN IN LINUX TERMINAL
+%% STEP 5: generate surface (The Hull) to project electrodes to - RUN IN LINUX TERMINAL
 % run this part in matlab with 'ctrl enter', this will show the text to copy in the terminal 
 clc
 % only for ECoG, because this is necessary to correct for brain-shift.
@@ -118,19 +131,18 @@ clc
 
 % Right click in the freesurfer/mri-folder and start Linux terminal.
 % Copy the printed lines in the command window into the linux terminal:
-fprintf('\n ----- OPEN %smri ----- \n ----- CLICK WITH RIGHT MOUSE AND OPEN LINUX TERMINAL ----- \n ----- RUN LINE BELOW IN LINUX TERMINAL ----- \nmri_convert ribbon.mgz t1_class.nii\n',cfg(1).freesurfer_directory)
+fprintf('\n ----- OPEN %smri ----- \n ----- CLICK WITH RIGHT MOUSE AND OPEN LINUX TERMINAL ----- \n ----- RUN LINE BELOW IN LINUX TERMINAL ----- \nmri_convert ribbon.mgz t1_class.nii\n',cfg(1).freesurfer_directory_linux)
 
 %% STEP 6: Create the hull - matlab
 if ~exist(cfg(1).deriv_directory,'dir')
     mkdir(cfg(1).deriv_directory)
-    
 end
-
+%test = '\\ds.umcutrecht.nl\data\HER\Respect-leijten\2_Chronic_ECoG\BIDS_output\derivatives\sub-RESP1486\ses-1\sub-RESP1486_ses-1_T1w\sub-RESP1486\';
 for i=1:size(cfg(1).hemisphere,2)
     settings_hull = [13,... % setting for smoothing: default 13
         0.3]; % setting for threshold: default 0.3
     k = get_mask_V3(cfg(1).sub_labels{:},... % subject name
-        [cfg(1).freesurfer_directory,'mri/t1_class.nii'],... % freesurfer class file
+        [cfg(1).freesurfer_directory,'mri\t1_class.nii'],... % freesurfer class file %
         cfg(1).deriv_directory,... % where you want to safe the file
         cfg(1).hemisphere{i},... % 'l' for left 'r' for right --> only use the hemisphere where electrodes are located
         settings_hull(1),...% setting for smoothing
@@ -138,7 +150,7 @@ for i=1:size(cfg(1).hemisphere,2)
     % the hull is saved as sub-RESPXXXX_surface1_13_03.img
 end
 
-%% STEP 7: check hull - RUN IN Linux TERMINAL
+%% STEP 7: check hull - mricron
 % run this part in matlab with 'ctrl enter', this will show the text to copy in the terminal 
 % type 'mricron'
 % load the MRI
@@ -146,7 +158,7 @@ end
 % check whether the hull looks like it matches the dura (should be a tight
 % baloon around the grey matter)
 
-fprintf('\n ----- RUN LINE BELOW IN LINUX TERMINAL, OPEN DEFACED MRI AND PUT HULL AS OVERLAY ON TOP ----- \n mricron \n \n ----- CHECK WHETHER THE HULL IS A TIGHT BALLOON AROUND THE CORTEX ----- \n')
+fprintf('\n ----- OPEN MRICRON in windows, OPEN DEFACED MRI AND PUT HULL AS OVERLAY ON TOP ----- \n mricron \n \n ----- CHECK WHETHER THE HULL IS A TIGHT BALLOON AROUND THE CORTEX ----- \n')
 
 %% STEP 8: select electrodes from ct - matlab
 % the order in which you click electrodes does not matter. Just make sure
@@ -183,7 +195,7 @@ fprintf('Matched electrodes are saved in %s\n',cfg(1).saveFile)
 % loads img file with electrodes from previous step
 % saves in electrodes_temp.mat;
 
-%% STEP 10: plot electrodes 2 surface - matlab
+%% STEP 10: plot electrodes 2 surface - matlab - run for sEEG and ECoG
 % corrects for the brain shift - ONLY for ECoG
 % 1xN STRIP: do not project any electrodes that are already close to the
 %               surfaces, such as subtemporal and interhemispheric
@@ -347,8 +359,10 @@ end
 % start Linux terminal.
 % Copy the printed lines in the command window into the linux terminal:
 for i=1:size(cfg(1).hemisphere,2)
-    fprintf('\n ----- OPEN %ssurf/ ---- \n ---- CLICK WITH YOUR RIGHT MOUSE AND OPEN LINUX TERMINAL ----- \n ----- RUN LINE BELOW IN LINUX TERMINAL ----- \nmris_convert %sh.pial %sh.pial.gii\n',cfg(1).freesurfer_directory,cfg(1).hemisphere{i},cfg(1).hemisphere{i})
+    fprintf('\n ----- OPEN %ssurf (via Other Locations) ---- \n ---- CLICK WITH YOUR RIGHT MOUSE AND OPEN LINUX TERMINAL ----- \n ----- RUN LINE BELOW IN LINUX TERMINAL ----- \n su  \n  \n \nmris_convert %sh.pial %sh.pial.gii\n',cfg(1).freesurfer_directory,cfg(1).hemisphere{i},cfg(1).hemisphere{i})
 end
+
+%fprintf('\n  ----- RUN LINE BELOW IN LINUX TERMINAL ----- \n su  \n  \n ----- RUN LINE BELOW IN LINUX TERMINAL ----- \n mri_deface %s_%s_T1w.nii %s  %s %s_%s_rec-deface_T1w.nii\n',...
 
 %% STEP 14: Convert the .gii coordinates to the MRI native space - matlab
 

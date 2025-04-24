@@ -134,9 +134,14 @@ for stim = 1:size(metadata.stimulation,1)
             default_note_now = default_note;
             
         else
-            
+            if i>1
             error('No triggers, but also no comment "No trigger" in trc-file. Might be an incorrect annotation between stimuli %s-%s and %s-%s',...
                 annot_stim{i-1,2:3},annot_stim{i+1,2:3})
+            else
+                error('No triggers, but also no comment "No trigger" in trc-file. Might be an incorrect annotation between stimuli %s-%s and %s-%s',...
+                annot_stim{i,2:3},annot_stim{i+1,2:3})
+            end
+
         end
         
         % define onset of stimulation
