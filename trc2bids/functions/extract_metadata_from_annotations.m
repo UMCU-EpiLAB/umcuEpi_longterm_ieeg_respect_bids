@@ -242,6 +242,26 @@ try
         % done in load_chanInfo
     end
     
+      %% look for PP channels primary propagation channels
+    pp_idx = cellfun(@(x) contains(x,{'PP'}),annots(:,2));
+    if(sum(pp_idx))
+        metadata.ch2use_pp=single_annotation(annots,'PP',ch);
+    elseif metadata.incl_exist == 1 && (sum(pp_idx)) == 0 % if included etc is annotated but pp is not part of it
+        metadata.ch2use_pp = false(size(ch));
+    elseif metadata.incl_exist == 0
+        % done in load_chanInfo
+    end
+    
+      %% look for PR channels proposed resection channels
+    pr_idx = cellfun(@(x) contains(x,{'PR'}),annots(:,2));
+    if(sum(pr_idx))
+        metadata.ch2use_pr=single_annotation(annots,'PR',ch);
+    elseif metadata.incl_exist == 1 && (sum(pr_idx)) == 0 % if included etc is annotated but pr is not part of it
+        metadata.ch2use_pr = false(size(ch));
+    elseif metadata.incl_exist == 0
+        % done in load_chanInfo
+    end
+    
     %% only in seeg channels
     if contains(metadata.format_info,'seeg')
         

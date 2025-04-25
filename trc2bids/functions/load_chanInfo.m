@@ -9,6 +9,8 @@ cc_elecs = readtable(elecName,'FileType','text','Delimiter','\t');
 % pre-allocation
 elec_incl       = false(size(ch));
 elec_soz        = false(size(ch));
+elec_pp        = false(size(ch));
+elec_pr        = false(size(ch));
 elec_silicon    = false(size(ch));
 elec_resected   = false(size(ch));
 elec_edge       = false(size(ch));
@@ -74,6 +76,8 @@ for i=1:size(ch,1)
         
         elec_incl(i)        = ~strcmp(cc_elecs.group{idx},'other');
         elec_soz(i)         = strcmp(cc_elecs.soz{idx},'yes');
+        elec_pp(i)         = strcmp(cc_elecs.pp{idx},'yes');
+        elec_pr(i)         = strcmp(cc_elecs.pr{idx},'yes');
         elec_silicon(i)     = strcmp(cc_elecs.silicon{idx},'yes');
         elec_resected(i)    = strcmp(cc_elecs.resected{idx},'yes');
         elec_edge(i)        = strcmp(cc_elecs.edge{idx},'yes');
@@ -102,6 +106,8 @@ for i=1:size(ch,1)
     else
         elec_incl(i)        = false;
         elec_soz(i)         = false;
+        elec_pp(i)         = false;
+        elec_pr(i)         = false;
         elec_silicon(i)     = false;
         elec_resected(i)    = false;
         elec_edge(i)        = false;
@@ -123,6 +129,8 @@ end
 metadata.ch2use_included    = logical(elec_incl);
 metadata.ch2use_silicon     = logical(elec_silicon);
 metadata.ch2use_soz         = logical(elec_soz);
+metadata.ch2use_pp         = logical(elec_pp);
+metadata.ch2use_pr         = logical(elec_pr);
 metadata.ch2use_resected    = logical(elec_resected);
 metadata.ch2use_edge        = logical(elec_edge);
 
