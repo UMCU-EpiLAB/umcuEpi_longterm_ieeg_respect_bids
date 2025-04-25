@@ -13,10 +13,12 @@ temp.electrodes.group            = ft_getopt(temp.electrodes, 'group'           
 temp.electrodes.hemisphere       = ft_getopt(temp.electrodes, 'hemisphere'         , nan);
 temp.electrodes.silicon          = ft_getopt(temp.electrodes, 'silicon'            , nan);
 temp.electrodes.soz              = ft_getopt(temp.electrodes, 'soz'                , nan);
+temp.electrodes.pp              = ft_getopt(temp.electrodes, 'pp'                , nan);
+temp.electrodes.pr              = ft_getopt(temp.electrodes, 'pr'                , nan);
 temp.electrodes.resected         = ft_getopt(temp.electrodes, 'resected'           , nan);
 temp.electrodes.edge             = ft_getopt(temp.electrodes, 'edge'               , nan);
 
-fn = {'name' 'x' 'y' 'z' 'size' 'material' 'manufacturer' 'group' 'hemisphere' 'silicon' 'soz' 'resected' 'edge'};
+fn = {'name' 'x' 'y' 'z' 'size' 'material' 'manufacturer' 'group' 'hemisphere' 'silicon' 'soz' 'pp' 'pr' 'resected' 'edge'};
 for i=1:numel(fn)
     if numel(temp.electrodes.(fn{i}))==1
         temp.electrodes.(fn{i}) = repmat(temp.electrodes.(fn{i}), header.Num_Chan, 1);
@@ -35,6 +37,8 @@ hemisphere                                = extract_hemisphere_info(metadata);
 
 silicon                                   = repmat({'no'},header.Num_Chan,1);
 soz                                       = repmat({'no'},header.Num_Chan,1);
+pp                                       = repmat({'no'},header.Num_Chan,1);
+pr                                       = repmat({'no'},header.Num_Chan,1);
 resected                                  = repmat({'no'},header.Num_Chan,1);
 edge                                      = repmat({'no'},header.Num_Chan,1);
 
@@ -66,6 +70,14 @@ end
 
 if(any(metadata.ch2use_soz))
     [soz{metadata.ch2use_soz}]  = deal('yes');
+end
+
+if(any(metadata.ch2use_pp))
+    [pp{metadata.ch2use_pp}]  = deal('yes');
+end
+
+if(any(metadata.ch2use_pr))
+    [pr{metadata.ch2use_pr}]  = deal('yes');
 end
 
 if(any(metadata.ch2use_resected))
@@ -104,15 +116,15 @@ if contains(lower(metadata.format_info),'seeg')
     end
     
     electrodes_tsv                            = table(name, x , y, z, e_size, ...
-        material, manufacturer,group,hemisphere, silicon, soz, resected, edge ,...
+        material, manufacturer,group,hemisphere, silicon, soz, pp, pr, resected, edge ,...
         screw,csf,wm,gm,hipp,amyg,lesion,gliosis,...
         'VariableNames',{'name', 'x', 'y', 'z', 'size', ...
-        'material', 'manufacturer', 'group','hemisphere','silicon' 'soz','resected','edge',...
+        'material', 'manufacturer', 'group','hemisphere','silicon' 'soz', 'pp', 'pr', 'resected','edge',...
         'screw','csf','whitematter','graymatter','hippocampus','amygdala','lesion','gliosis'})     ;
     
 else
     electrodes_tsv                            = table(name, x , y, z, e_size, material, manufacturer, group,hemisphere, silicon, soz, resected, edge ,...
-        'VariableNames',{'name', 'x', 'y', 'z', 'size', 'material', 'manufacturer','group','hemisphere', 'silicon' 'soz','resected','edge'})     ;
+        'VariableNames',{'name', 'x', 'y', 'z', 'size', 'material', 'manufacturer','group','hemisphere', 'silicon' 'soz', 'pp', 'pr', 'resected','edge'})     ;
 end
 
 electrodes_tsv = bids_tsv_nan2na(electrodes_tsv);
