@@ -123,7 +123,8 @@ if contains(lower(metadata.format_info),'seeg')
         'screw','csf','whitematter','graymatter','hippocampus','amygdala','lesion','gliosis'})     ;
     
 else
-    electrodes_tsv                            = table(name, x , y, z, e_size, material, manufacturer, group,hemisphere, silicon, soz, resected, edge ,...
+
+    electrodes_tsv                            = table(name, x , y, z, e_size, material, manufacturer, group,hemisphere, silicon, soz, pp, pr, resected, edge ,...
         'VariableNames',{'name', 'x', 'y', 'z', 'size', 'material', 'manufacturer','group','hemisphere', 'silicon' 'soz', 'pp', 'pr', 'resected','edge'})     ;
 end
 
