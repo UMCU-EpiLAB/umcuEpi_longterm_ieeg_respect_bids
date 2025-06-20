@@ -1,9 +1,12 @@
 
 function div_annots = findStimAnnots(metadata,annots_new,numannots)
+%function div_annots = findStimAnnots(metadata,annots_new,numannots,evname)
 %%
-annot_neg = [];annot_curr = []; annot_pulsdur=[]; annot_freq =[]; annot_bi_mono = []; annot_note = {}; annot_stim={};
-countcurr = 1; countstim=1;countlow = 1;countpuls = 1;
- countfreq = 1;
+annot_neg = [];annot_curr = []; annot_pulsdur=[]; annot_freq =[]; annot_bi_mono = []; annot_note = {}; annot_stim={}; 
+% annot_isi = []; annot_hekjep = [];
+countcurr = 1; countstim=1; countlow = 1;countpuls = 1;
+countfreq = 1;
+% countisi = 1; counthekjep = 1;
 
 for i=numannots
     %%
@@ -38,16 +41,16 @@ for i=numannots
     end
     
     if ~isempty(regexp(lower(annots_new{i,2}),'hz', 'once'))
-        annot_freq(countfreq,1) = annots_new{i,1};
         if ~isnan(str2double(cell2mat(extractBetween(regexp(lower(annots_new{i,2}),' [0-9.]+hz','match'),' ','hz'))))
             annot_freq(countfreq,2) = str2double(cell2mat(extractBetween(regexp(lower(annots_new{i,2}),' [0-9.]+hz','match'),' ','hz')));
         elseif ~isnan(str2double(cell2mat(extractBetween(regexp(lower(annots_new{i,2}),'_[0-9.]+hz','match'),'_','hz'))))
             annot_freq(countfreq,2) = str2double(cell2mat(extractBetween(regexp(lower(annots_new{i,2}),'_[0-9.]+hz','match'),'_','hz'))); 
+        else
+            continue
         end
+        annot_freq(countfreq,1) = annots_new{i,1};
         countfreq = countfreq +1;
-    end
-    
-     
+    end 
    
     if  ~isempty(regexp(lower(annots_new{i,2}),'_bi', 'once'))
         annot_bi_mono = [annot_bi_mono;annots_new{i,1}];
@@ -59,6 +62,25 @@ for i=numannots
         countlow = countlow+1;
     end
     
+    %
+    % if evname == "SPESpaired" % SPES-IN paired pulse study
+    % 
+    %     if ~isempty(regexp(lower(annots_new{i,2}),'_[0-9.]+isi', 'once')) % interstimulus interval
+    % 
+    %         annot_isi(countisi,1) = annots_new{i,1};
+    %         annot_isi(countisi,2) = str2double(cell2mat(extractBetween(regexp(lower(annots_new{i,2}),'_[0-9.]+isi','match'),'_','isi')));
+    %         countisi = countisi+1;
+    %     end
+    %     if ~isempty(regexp(lower(annots_new{i,2}),'_[0-9.]+#p', 'once')) % nr of pulses, 1, 2 or 20
+    % 
+    %         annot_hekjep(counthekjep,1) = annots_new{i,1};
+    %         annot_hekjep(counthekjep,2) = str2double(cell2mat(extractBetween(regexp(lower(annots_new{i,2}),'_[0-9.]+#p','match'),'_','#p')));
+    %         counthekjep = counthekjep+1;
+    %     end
+    % 
+    % end
+
+
     % stimulus pair
     stimnames = {}; stimnums = {};
     if ~isempty(regexp(annots_new{i,2},'_', 'once')) % if there is a _ in the annotation (normally, this is a SPES annotation)
@@ -110,6 +132,8 @@ div_annots.annot_freq = annot_freq;
 div_annots.annot_bi_mono = annot_bi_mono;
 div_annots.annot_note = annot_note;
 div_annots.annot_stim = annot_stim;
+% div_annots.annot_hekjep = annot_hekjep;
+% div_annots.annot_isi = annot_isi;
 
 
 

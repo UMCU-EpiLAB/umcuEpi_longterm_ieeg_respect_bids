@@ -16,6 +16,7 @@ for stim = 1:size(metadata.stimulation,1)
     %% find annotations with stimulation parameters
     numannots = find([annots_new{:,1}]>stimperiod(1) & [annots_new{:,1}]<stimperiod(2));
     div_annots = findStimAnnots(metadata,annots_new,numannots);
+    % div_annots = findStimAnnots(metadata,annots_new,numannots,evname);
     
     annot_stim = div_annots.annot_stim;
     annot_neg = div_annots.annot_neg;
@@ -24,6 +25,9 @@ for stim = 1:size(metadata.stimulation,1)
     annot_freq = div_annots.annot_freq;
     annot_curr = div_annots.annot_curr;
     annot_note = div_annots.annot_note;
+    % annot_hekjep = div_annots.annot_hekjep;
+    % annot_isi = div_annots.annot_isi;
+
     
     %% default stimulation parameters
     % stimulus current
@@ -73,7 +77,11 @@ for stim = 1:size(metadata.stimulation,1)
     else
         default_note = 'n/a';
     end
-    
+    % 
+    % if evname == "SPESpaired" % SPES-IN paired pulse study
+    %     default_hekjep = NaN;
+    %     default_isi = NaN;
+    % end
     %% load ECoG if no triggers
     if sum(cellfun(@(x) contains(x,{'No trigger'}),annots_new(:,2)))>0
         dataName = [cfg(1).ieeg_dir{1},'/', replace(fevents_name,'_events.tsv','_ieeg.vhdr')];
@@ -379,7 +387,9 @@ for stim = 1:size(metadata.stimulation,1)
         stimannots(stim).freq{i} = stim_freq; %#ok<AGROW>
         stimannots(stim).ch_name_on{i} = stim_ch_name_on; %#ok<AGROW>
         stimannots(stim).ch_name_off{i} = stim_ch_name_off; %#ok<AGROW>
-        
+        % stimannots(stim).hekjep{i} = stim_hekjep; %#ok<AGROW>
+        % stimannots(stim).isi{i} = stim_isi; %#ok<AGROW>
+        % 
     end
 end
 
@@ -398,6 +408,9 @@ notes = horzcat(stimannots(:).notes);
 freq = horzcat(stimannots(:).freq);
 ch_name_on = horzcat(stimannots(:).ch_name_on);
 ch_name_off = horzcat(stimannots(:).ch_name_off);
+% hekjep = horzcat(stimannots(:).hekjep);
+% isi = horzcat(stimannots(:).hekjep);
+
 
 eventsannots.type = vertcat(vertcat(eventsannots.type(:)), vertcat(type{:}));
 eventsannots.sub_type = vertcat(vertcat(eventsannots.sub_type(:)), vertcat(sub_type{:}));
@@ -414,6 +427,8 @@ eventsannots.notes = vertcat(vertcat(eventsannots.notes(:)), vertcat(notes{:}));
 eventsannots.freq = vertcat(vertcat(eventsannots.freq(:)), vertcat(freq{:}));
 eventsannots.ch_name_on = vertcat(vertcat(eventsannots.ch_name_on(:)), vertcat(ch_name_on{:}));
 eventsannots.ch_name_off = vertcat(vertcat(eventsannots.ch_name_off(:)), vertcat(ch_name_off{:}));
+% eventsannots.hekjep = vertcat(vertcat(eventsannots.hekjep(:)), vertcat(hekjep{:}));
+% eventsannots.isi = vertcat(vertcat(eventsannots.isi(:)), vertcat(isi{:}));
 
 
 end
