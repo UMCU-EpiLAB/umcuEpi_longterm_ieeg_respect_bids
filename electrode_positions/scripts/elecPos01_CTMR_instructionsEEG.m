@@ -72,7 +72,7 @@ fprintf('\n ----- OPEN LINUX TERMINAL, RUN LINE BELOW IN LINUX TERMINAL -----\n 
 
 fprintf('\n ----- OPEN MRICRON in windows, OPEN DEFACED MRI TO CHECK DEFACING ----- \n mricron \n')
 
-%% STEP 4: run freesurfer to segment brain add Destrieux atlases - RUN IN LINUX TERMINAL
+%% STEP 4 GOED: run freesurfer to segment brain add Destrieux atlases - RUN IN LINUX TERMINAL
 % run this part in matlab with 'ctrl enter', this will show the text to copy in the terminal 
 clc
 
@@ -103,22 +103,37 @@ end
 
 
 % Right click in the folder with the original MRI and start Linux terminal.
-% Copy the printed lines in the command window into the linux terminal:
-fprintf('\n ----- OPEN LINUX TERMINAL, RUN LINE BELOW IN LINUX TERMINAL -----\n  cd %ssourcedata/%s/%s/anat/   \n -----  RUN LINE BELOW IN LINUX TERMINAL ----- \nexport SUBJECTS_DIR=%s\n',...
-    cfg(1).proj_diroutput_linux,...
+% Copy the printed lines in the command window to run Freesurfer in the linux terminal:
+fprintf('\n ----- RUN LINE BELOW IN LINUX TERMINAL ----- \n cp %s%s_%s_rec-deface_T1w.nii %s\n',...
+    cfg(1).anat_directory_linux,...
     cfg(1).sub_label,...
-    cfg(1).ses_label,...
-    cfg(1).freesurfer_directory_linux)
+    cfg(1).ses_label, ...
+    '/home/epilab/Desktop/')
+
+%Copy the printed lines in the command window into the linux terminal:
+fprintf('\n -----  RUN LINE BELOW IN LINUX TERMINAL ----- \n export SUBJECTS_DIR=%s \n', ...
+     '/home/epilab/Desktop/')
+
 % Copy the printed lines in the command window to run Freesurfer in the linux terminal:
 fprintf('\n ----- RUN LINE BELOW IN LINUX TERMINAL ----- \nrecon-all -autorecon-all -s %s -i %s%s_%s_rec-deface_T1w.nii -cw256\n',...
     cfg(1).sub_label,...
-    cfg(1).anat_directory_linux,...
+    '/home/epilab/Desktop/',...
     cfg(1).sub_label,...
     cfg(1).ses_label)
 
+% Copy the printed lines in the command window to run Freesurfer in the linux terminal:
+% -P is a test 23/6 for symbolic links, see if it works
+fprintf('\n ----- RUN LINE BELOW IN LINUX TERMINAL ----- \n cp -r -P %s%s/  %s\n',...
+    '/home/epilab/Desktop/',...
+    cfg(1).sub_label,...
+    cfg(1).freesurfer_directory_linux)
+
+%L:\Respect-leijten\5_BIDS\chronic_ECoG\derivatives\freesurfer\sub-RESP1162\ses-1\sub-RESP1162_ses-1_T1w
+
 % This takes up to 12 hours to run! In the end, you will see a subject
 % folder in the freesurfer folder.
-
+%% STEP 4 copy works but not symbolic link and manually do RESP1162 folder one up
+%% STEP 5 works (already done for 1162)
 %% STEP 5: generate surface (The Hull) to project electrodes to - RUN IN LINUX TERMINAL
 % run this part in matlab with 'ctrl enter', this will show the text to copy in the terminal 
 clc
@@ -130,6 +145,7 @@ clc
 % (a tight balloon of where the electrodes should be on the pre-op MRI)
 
 % Right click in the freesurfer/mri-folder and start Linux terminal.
+
 % Copy the printed lines in the command window into the linux terminal:
 fprintf('\n ----- OPEN %smri ----- \n ----- CLICK WITH RIGHT MOUSE AND OPEN LINUX TERMINAL ----- \n ----- RUN LINE BELOW IN LINUX TERMINAL ----- \nmri_convert ribbon.mgz t1_class.nii\n',cfg(1).freesurfer_directory_linux)
 
