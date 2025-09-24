@@ -18,7 +18,7 @@
 %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 % DvB - made it compatible with BIDS electrodes.tsv September 2019
-% SJ & IH - made it compatible for windows 2025 - works now for RESP1162!
+% SJ & IH - made it compatible for windows 2025 
 
 % This script has a part that should be run in a linux terminal, and part
 % that can be run in matlab. The parts that should be run in a linux
@@ -140,7 +140,6 @@ fprintf('\n ----- RUN LINE BELOW IN LINUX TERMINAL ----- \n cp -r -P %s%s/  %s\n
     cfg(1).sub_label,...
     cfg(1).freesurfer_directory_linux)
 
-%L:\Respect-leijten\5_BIDS\chronic_ECoG\derivatives\freesurfer\sub-RESP1162\ses-1\sub-RESP1162_ses-1_T1w
 
 % This takes up to 12 hours to run! In the end, you will see a subject
 % folder in the freesurfer folder.
@@ -165,7 +164,7 @@ fprintf('\n ----- OPEN %smri ----- \n ----- CLICK WITH RIGHT MOUSE AND OPEN LINU
 if ~exist(cfg(1).deriv_directory,'dir')
     mkdir(cfg(1).deriv_directory)
 end
-%test = '\\ds.umcutrecht.nl\data\HER\Respect-leijten\2_Chronic_ECoG\BIDS_output\derivatives\sub-RESP1486\ses-1\sub-RESP1486_ses-1_T1w\sub-RESP1486\';
+
 for i=1:size(cfg(1).hemisphere,2)
     settings_hull = [13,... % setting for smoothing: default 13
         0.3]; % setting for threshold: default 0.3
@@ -427,7 +426,6 @@ end
 disp('Atlases added')
 
 %% STEP 16: CHECK ATLAS WITH ELECTRODE POSITIONS - matlab
-% RESP1162 wel veel electroden steken nog uit
 close all
 
 cfg(1).show_labels = 'yes';
