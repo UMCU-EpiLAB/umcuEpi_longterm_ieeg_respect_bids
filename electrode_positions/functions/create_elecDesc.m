@@ -60,7 +60,8 @@ elecdesc_json.Benson_sigma          = 'Electrode location in a visual cortex reg
 
 if ~isempty(elecdesc_json)
     
-    filename = fullfile(proj_dir,cfg(1).sub_labels{:},cfg(1).ses_label,'ieeg',[cfg(1).sub_labels{:},'_',cfg(1).ses_label,'_electrodes.json']);
+    filename = fullfile(proj_dir,cfg(1).sub_label,cfg(1).ses_label,'ieeg',[cfg(1).sub_label,'_',cfg(1).ses_label,'_electrodes.json']);
+    %cfg(1).sub_labels{:} 24-9 aangepast SJ
     write_json(filename, elecdesc_json)
 end
 end

@@ -18,17 +18,23 @@
 %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 % DvB - made it compatible with BIDS electrodes.tsv September 2019
-% SJ & IH - made it compatible for windows 2025
+% SJ & IH - made it compatible for windows 2025 
 
 % This script has a part that should be run in a linux terminal, and part
 % that can be run in matlab. The parts that should be run in a linux
 % terminal have "run in linux terminal" in the section title.
+% see also the corresponding IFU, 5_IFU_electrode positions_procespc
 
+% TO DO:
+% - STEP 12 solve that elec pos can be plotted onto mri
+% - STEP 8 and 9 change with script nicole
+% - STEP 4 for a lot of pt
 %% patient characteristics - matlab
 
 clear
 close all
 cfg(1).sub_label = {['sub-' input('Patient number (RESPXXXX)/(REC2StimXX)/(PRIOSXX): ','s')]};
+cfg(1).sub_labels = cfg(1).sub_label; % needed for some trc2bids functions
 cfg(1).no_fieldtrip = 'yes';
 cfg(1).mode = 'electrodeposition_preMRI';
 
@@ -41,10 +47,14 @@ splitPath = regexp(rootPath,'\','split');
 indexSpmPath = find(contains(splitPath,'umcuEpi_longterm_ieeg_respect_bids'));
 spmPath = fullfile(splitPath{1:indexSpmPath-1},'spm12');
 addpath(genpath(spmPath));
+freesurferPath = fullfile(splitPath{1:indexSpmPath-1},'freesurfer');
+addpath(genpath(freesurferPath));
 
 % householding
-clear rootPath splitPath spmPath indexSpmPath
+clear rootPath splitPath spmPath indexSpmPath freesurferPath
 %% STEP 3: defacing MRI - RUN IN LINUX TERMINAL- check in windows
+% CHECK if this is not already done manually in sourcedata, than skip this
+% step
 % run this part in matlab with 'ctrl enter', this will show the text to copy in the terminal 
 clc
 
@@ -101,6 +111,8 @@ else
     mkdir(cfg(1).freesurfer_directory)
 end
 
+% log into Oracle virtual box linux environment
+fprintf(' \n ----- RUN LINE BELOW IN LINUX TERMINAL ----- \n su  \n password: Dr.House \n')
 
 % Right click in the folder with the original MRI and start Linux terminal.
 % Copy the printed lines in the command window to run Freesurfer in the linux terminal:
@@ -128,12 +140,10 @@ fprintf('\n ----- RUN LINE BELOW IN LINUX TERMINAL ----- \n cp -r -P %s%s/  %s\n
     cfg(1).sub_label,...
     cfg(1).freesurfer_directory_linux)
 
-%L:\Respect-leijten\5_BIDS\chronic_ECoG\derivatives\freesurfer\sub-RESP1162\ses-1\sub-RESP1162_ses-1_T1w
 
 % This takes up to 12 hours to run! In the end, you will see a subject
 % folder in the freesurfer folder.
-%% STEP 4 copy works but not symbolic link and manually do RESP1162 folder one up
-%% STEP 5 works (already done for 1162)
+%% STEP 4 copy works but not symbolic link and manually do RESP*** folder one up
 %% STEP 5: generate surface (The Hull) to project electrodes to - RUN IN LINUX TERMINAL
 % run this part in matlab with 'ctrl enter', this will show the text to copy in the terminal 
 clc
@@ -149,11 +159,12 @@ clc
 % Copy the printed lines in the command window into the linux terminal:
 fprintf('\n ----- OPEN %smri ----- \n ----- CLICK WITH RIGHT MOUSE AND OPEN LINUX TERMINAL ----- \n ----- RUN LINE BELOW IN LINUX TERMINAL ----- \nmri_convert ribbon.mgz t1_class.nii\n',cfg(1).freesurfer_directory_linux)
 
+
 %% STEP 6: Create the hull - matlab
 if ~exist(cfg(1).deriv_directory,'dir')
     mkdir(cfg(1).deriv_directory)
 end
-%test = '\\ds.umcutrecht.nl\data\HER\Respect-leijten\2_Chronic_ECoG\BIDS_output\derivatives\sub-RESP1486\ses-1\sub-RESP1486_ses-1_T1w\sub-RESP1486\';
+
 for i=1:size(cfg(1).hemisphere,2)
     settings_hull = [13,... % setting for smoothing: default 13
         0.3]; % setting for threshold: default 0.3
@@ -210,7 +221,6 @@ sortElectrodes(tb_elecs,cfg(1)); % [electrode labels, folder to save]
 fprintf('Matched electrodes are saved in %s\n',cfg(1).saveFile)
 % loads img file with electrodes from previous step
 % saves in electrodes_temp.mat;
-
 %% STEP 10: plot electrodes 2 surface - matlab - run for sEEG and ECoG
 % corrects for the brain shift - ONLY for ECoG
 % 1xN STRIP: do not project any electrodes that are already close to the
@@ -345,7 +355,7 @@ elecmatrix_shift(:,3) = tb_elecs.z;
 % This is not necessary, only if you want to do some extra checks or so.
 % e.g. it can be nice to visualize the projected electrodes in MRIcron.
 % to visualize in MRIcron: open the defaced MRI and add the surface_all.img
-% as overlay
+% as overlay % does not work, cannot open the .img as overlay
 
 [output,els,els_ind,outputStruct] = position2reslicedImage(elecmatrix_shift,[cfg(1).anat_directory, cfg(1).sub_label,'_',cfg(1).ses_label,'_rec-deface_T1w.nii']);
 
@@ -359,6 +369,7 @@ for filenummer=1:100
         break
     end
 end
+
 
 %% STEP 13: convert freesurfer file to .gii - RUN IN LINUX TERMINAL
 % run this part in matlab with 'ctrl enter', this will show the text to copy in the terminal 
@@ -375,10 +386,8 @@ end
 % start Linux terminal.
 % Copy the printed lines in the command window into the linux terminal:
 for i=1:size(cfg(1).hemisphere,2)
-    fprintf('\n ----- OPEN %ssurf (via Other Locations) ---- \n ---- CLICK WITH YOUR RIGHT MOUSE AND OPEN LINUX TERMINAL ----- \n ----- RUN LINE BELOW IN LINUX TERMINAL ----- \n su  \n  \n \nmris_convert %sh.pial %sh.pial.gii\n',cfg(1).freesurfer_directory,cfg(1).hemisphere{i},cfg(1).hemisphere{i})
+    fprintf('\n ----- RUN cp -L /home/epilab/Desktop/%s/surf/%sh.pial %ssurf (via Other Locations) ---- \n ---- CLICK WITH YOUR RIGHT MOUSE AND OPEN LINUX TERMINAL cd %ssurf ----- \n ----- RUN LINE BELOW IN LINUX TERMINAL ----- \n su  \n  \n \nmris_convert %sh.pial %sh.pial.gii\n',cfg(1).sub_label,cfg(1).hemisphere{i},cfg(1).freesurfer_directory_linux,cfg(1).freesurfer_directory_linux,cfg(1).hemisphere{i},cfg(1).hemisphere{i})
 end
-
-%fprintf('\n  ----- RUN LINE BELOW IN LINUX TERMINAL ----- \n su  \n  \n ----- RUN LINE BELOW IN LINUX TERMINAL ----- \n mri_deface %s_%s_T1w.nii %s  %s %s_%s_rec-deface_T1w.nii\n',...
 
 %% STEP 14: Convert the .gii coordinates to the MRI native space - matlab
 
@@ -389,7 +398,7 @@ for i=1:size(cfg(1).hemisphere,2)
     % convert from freesurfer space to original space
     % the transformation matrix is in the /freesurfer/sub/mri/orig.mgz file:
     mri_orig = fullfile(cfg(1).freesurfer_directory,'mri','orig.mgz');
-    orig = MRIread(mri_orig); % MRIread is a function from vistasoft
+    orig = MRIread_windows(mri_orig); % MRIread is a function from vistasoft (freesurfer)
     Torig = orig.tkrvox2ras;
     Norig = orig.vox2ras;
     freeSurfer2T1 = Norig*inv(Torig); %#ok<MINV>
@@ -482,7 +491,7 @@ for i=1:size(D,1)
     end
 end
 
-%% STEP 17: save everything to second proj_diroutput directory
+%% STEP 17: save everything to second proj_diroutput directory, not used at the moment
 
 if~isempty(cfg(2).proj_diroutput)
     cfg(1).freesurfer_directory = sprintf('%sderivatives/freesurfer/%s/%s/',cfg(2).proj_diroutput,cfg(1).sub_label,cfg(1).ses_label);

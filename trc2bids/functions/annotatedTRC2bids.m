@@ -188,8 +188,8 @@ try
                
          %% write coordsystem.json (if this file already exists)
          % this is relocated to when the electrode positions are
-         % determined.
-%         write_coordsystemJSON(cfg)
+         % determined. If you want it here change cfg(1).sub_label to cfg(1).sub_labels{:}
+%         write_coordsystemJSON(cfg) 
 
         %% write dataset descriptor
         
