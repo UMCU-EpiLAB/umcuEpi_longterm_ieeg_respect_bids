@@ -24,7 +24,7 @@ function [electrodes_tableWithlabels, destrieux_labels, DKT_labels] = lookupAtla
 for i=1:size(cfg.hemisphere,2)
     
     g.(cfg.hemisphere{i}) = gifti(fullfile(cfg.surface_directory,...
-        [cfg.sub_labels{:}, '_', cfg.ses_label, '_T1w_pial.' cfg.hemisphere{i} '.surf.gii']));
+        [cfg.sub_label, '_', cfg.ses_label, '_T1w_pial.' cfg.hemisphere{i} '.surf.gii']));
     
     % electrodes_tsv = [cfg.ieeg_directory,  '_electrodes.tsv'];
     

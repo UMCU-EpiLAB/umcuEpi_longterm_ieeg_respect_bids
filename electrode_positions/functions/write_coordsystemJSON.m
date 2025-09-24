@@ -8,10 +8,10 @@ function write_coordsystemJSON(cfg)
 %%
 
 coord_json_name = fullfile(cfg(1).ieeg_directory,...
-    [cfg(1).sub_labels{:} '_' cfg(1).ses_label '_coordsystem.json']);
+    [cfg(1).sub_label '_' cfg(1).ses_label '_coordsystem.json']);
 
 % This line is to create a variable for the name of the file intendedFor
-filename_T1w = fullfile(cfg(1).sub_labels{:},cfg(1).ses_label, 'anat', [cfg(1).sub_labels{:} '_' cfg(1).ses_label '_rec-deface_T1w.nii']);
+filename_T1w = fullfile(cfg(1).sub_label,cfg(1).ses_label, 'anat', [cfg(1).sub_label '_' cfg(1).ses_label '_rec-deface_T1w.nii']);
 
 if exist(fullfile(cfg(1).proj_diroutput,filename_T1w),'file')
     % assign information and methodology
@@ -34,8 +34,9 @@ if exist(fullfile(cfg(1).proj_diroutput,filename_T1w),'file')
 
         delete(coord_json_name)
         write_json(coord_json_name, loc_json)
-        fileattrib(coord_json_name,'-w -x','o') % make not-writable and not-executable for other users
-        fileattrib(coord_json_name,'+w +x','g') % make writable and executable (required for folders to open them) for group users
+        % fileattrib(coord_json_name,'-w -x','o') % make not-writable and not-executable for other users
+        % fileattrib(coord_json_name,'+w +x','g') % make writable and executable (required for folders to open them) for group users
+        % % cannot be used in windows, to do make different system!
 
     end
 

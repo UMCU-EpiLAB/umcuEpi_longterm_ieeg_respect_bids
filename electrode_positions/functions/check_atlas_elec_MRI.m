@@ -43,7 +43,7 @@ for i=1:size(cfg.hemisphere,2)
 
     % gifti file name:
     dataGiiName = fullfile(cfg.surface_directory,...
-        [cfg.sub_labels{:} '_' cfg.ses_label '_T1w_pial.' cfg.hemisphere{i} '.surf.gii']);
+        [cfg.sub_label '_' cfg.ses_label '_T1w_pial.' cfg.hemisphere{i} '.surf.gii']);
     % load gifti:
     g.(cfg.hemisphere{i}) = gifti(dataGiiName);
 
@@ -70,7 +70,7 @@ end
 % electrode locations name:
 if isempty(tb_elecs)
     dataLocName = dir(fullfile(cfg.ieeg_directory,...
-        [cfg.sub_labels{:},'_',cfg.ses_label '_electrodes.tsv']));
+        [cfg.sub_label,'_',cfg.ses_label '_electrodes.tsv']));
     dataLocName = fullfile(dataLocName(1).folder,dataLocName(1).name);
     % load electrode locations
     tb_elecs = readtable(dataLocName,'FileType','text','Delimiter','\t','TreatAsEmpty','n/a');

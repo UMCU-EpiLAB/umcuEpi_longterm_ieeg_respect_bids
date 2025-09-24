@@ -25,8 +25,7 @@ end
 
 % run all files within your input directory
 n=1;
-for i=1:size(files,1)
-    runall(i).file = files(i).name;
+for i=1:size(files,1)    runall(i).file = files(i).name;
     if contains(files(i).name,'EEG_')
        
         cfg(1).filename = [cfg(1).pathname,files(i).name];
