@@ -212,7 +212,7 @@ fprintf('\n ----- OPEN MRICRON in windows, OPEN DEFACED MRI AND PUT HULL AS OVER
 
 %% STEP 9A: LOAD DATA
 clc;
-clear all;
+clear all;close all;
 
 addpath('\Matlab\spm12_updatesr7487')
 addpath('\Matlab\fieldtrip-20201103')
@@ -225,6 +225,10 @@ ct_elek_to_gd= [ctpathname  ctname];
 
 [t1name, t1pathname] = uigetfile('*.nii', 'Give the .nii file of the subject''s T1 MRI file'); % see werkmap
 t1_to_gd= [t1pathname  t1name];
+
+[gdname, gdpathname] = uigetfile('*.nii', 'Give the .nii file of the subject''s Gd MRI file'); % see werkmap
+gd_elek_ref= [gdpathname  gdname];
+
 
 % Clear temporary variables
 clear ctname ctpathname mriname t1name  
@@ -279,6 +283,24 @@ clear i list tmp xmlpathname ans electrode ind j k version170403
 % x and y coordinate *-1 --> now sure why, but this is necessary
 points(:,1)=points(:,1).*-1;
 points(:,2)=points(:,2).*-1;
+
+%transform electrodes to MRI T1 space instead of Gd space
+% perform coregistration and calculate the transformation matrix
+mrit1 = spm_vol(t1_to_gd);
+gd = spm_vol(gd_elek_ref);
+fig = spm_figure('Create','Graphics');
+
+%x_mri = spm_coreg(reference,source,flags);
+x_mri = spm_coreg(mrit1,gd);
+% get the transformation matrix in the right format
+t_matrix_mri=spm_matrix(x_mri(:)');
+
+% use transformation matrix on source electrodes
+%VS_coreg = VS;
+%VS_coreg.mat = VS.mat*t_matrix_mri;
+points_augmented = [points,ones(size(points,1),1)]';
+points_transformed = t_matrix_mri*points_augmented;
+points = points_transformed(1:3,:)';
 
 %% STEP 9B: get electrode names and length as input from user
 prompt = [];
@@ -340,7 +362,33 @@ cfg.output='tpm';
 mriT1.coordsys='spm';
 tpm=ft_volumesegment(cfg,mriT1);
 
+
 inside = tpm.gray | tpm.white | tpm.csf;
+
+%resample ct to mri (if needed)
+% resample ct to mri (if needed)
+if any(ct_coreg_threshold.dim ~= tpm.dim)
+    warning("CT and MRI dimensions are unequal: resampling CT to MRI space")
+
+    cfg            = [];
+    cfg.parameter  = 'anatomy';
+    cfg.interpmethod = 'linear';   % or 'nearest' if you want binary thresholded images
+             
+    cfg.downsample = 1;            % no downsampling
+    cfg.dim = tpm.dim;% go to MRI resolution
+
+    % reslice CT into MRI space
+    ct_resliced = ft_volumereslice(cfg, ct);
+
+    % update CT struct
+    
+    ct_coreg_threshold = ct_resliced;
+    
+    voxinds = round(ft_warp_apply(pinv(ct_resliced.transform), points)); 
+    % re-apply threshold
+    ct_coreg_threshold.anatomy = ct_resliced.anatomy > threshold;
+end
+
 ct_coreg_threshold.anatomy = ct_coreg_threshold.anatomy & inside;
 
 % Clear temporary variables
