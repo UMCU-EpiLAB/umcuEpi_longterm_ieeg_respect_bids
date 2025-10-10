@@ -25,6 +25,8 @@ if(~isempty(event))
         eventsannots.site_name{cc,1} = 'n/a';
         eventsannots.stim_cur{cc,1} = 'n/a';
         eventsannots.freq{cc,1} = 'n/a';
+        eventsannots.pulses{cc,1} = 'n/a';
+        eventsannots.isi{cc,1} = 'n/a';
        
         if isfield(event{i},'notes') && ~isempty(event{i}.notes)
             eventsannots.notes{cc,1} = event{i}.notes;

@@ -15,8 +15,8 @@ for stim = 1:size(metadata.stimulation,1)
     
     %% find annotations with stimulation parameters
     numannots = find([annots_new{:,1}]>stimperiod(1) & [annots_new{:,1}]<stimperiod(2));
-    div_annots = findStimAnnots(metadata,annots_new,numannots);
-    % div_annots = findStimAnnots(metadata,annots_new,numannots,evname);
+    %div_annots = findStimAnnots(metadata,annots_new,numannots);
+    div_annots = findStimAnnots(metadata,annots_new,numannots,evname);
     
     annot_stim = div_annots.annot_stim;
     annot_neg = div_annots.annot_neg;
@@ -25,8 +25,8 @@ for stim = 1:size(metadata.stimulation,1)
     annot_freq = div_annots.annot_freq;
     annot_curr = div_annots.annot_curr;
     annot_note = div_annots.annot_note;
-    % annot_hekjep = div_annots.annot_hekjep;
-    % annot_isi = div_annots.annot_isi;
+    annot_pulses = div_annots.annot_pulses;
+    annot_isi = div_annots.annot_isi;
 
     
     %% default stimulation parameters
@@ -78,10 +78,10 @@ for stim = 1:size(metadata.stimulation,1)
         default_note = 'n/a';
     end
     % 
-    % if evname == "SPESpaired" % SPES-IN paired pulse study
-    %     default_hekjep = NaN;
-    %     default_isi = NaN;
-    % end
+    if evname == "SPESpaired" % SPES-IN paired pulse study
+        default_pulses = NaN;
+        default_isi = NaN;
+    end
     %% load ECoG if no triggers
     if sum(cellfun(@(x) contains(x,{'No trigger'}),annots_new(:,2)))>0
         dataName = [cfg(1).ieeg_dir{1},'/', replace(fevents_name,'_events.tsv','_ieeg.vhdr')];
@@ -125,7 +125,24 @@ for stim = 1:size(metadata.stimulation,1)
         else
             idx_trigger = [];
         end
-        
+
+        if evname == "SPESpaired" % SPES-IN paired pulse study
+            if ~isempty(annot_isi)
+                idx_isi = ismember(annot_isi(:,1),stim_start:stim_stop-1);
+            else
+                idx_isi = [];
+            end
+        end
+
+        if evname == "SPESpaired" % SPES-IN paired pulse study
+            if ~isempty(annot_pulses)
+                idx_pulses = ismember(annot_pulses(:,1),stim_start:stim_stop-1);
+            else
+                idx_pulses = [];
+            end
+        end
+
+
         %% find onset samples when stimulation starts
         
         % if no trigger is found in the entire data dile
@@ -270,17 +287,72 @@ for stim = 1:size(metadata.stimulation,1)
             stim_pulsewidth = cell(size(stim_locs,1),1);
             [stim_pulsewidth{idx_stim_pulsewidth}] = deal(default_pulsewidth);
         end
+
+        %% Paired Pulse ISI and Pulses
+        if evname == "SPESpaired" % SPES-IN paired pulse study
+            samp_isi = [];
+            if ~isempty(annot_isi)
+                samp_isi = annot_isi(idx_isi,1);
+                val_isi = annot_isi(idx_isi,2);
+                
+                stim_isi = cell(size(stim_locs,1),1);
+                [stim_isi{:}] = deal(default_isi);
+                
+                for n=1:size(samp_isi,1)
+                    if n<size(samp_isi,1)
+                        idx_stim_isi = locs>samp_isi(n)& locs<samp_isi(n+1) ;
+                        [stim_isi{idx_stim_isi}] = deal(val_isi(n));
+                    else
+                        idx_stim_isi = locs>samp_isi(n);
+                        [stim_isi{idx_stim_isi}] = deal(val_isi(n));
+                    end
+                end
+                
+            else
+                idx_stim_isi = true(1,size(stim_locs,1));
+                stim_isi = cell(size(stim_locs,1),1);
+                [stim_isi{idx_stim_isi}] = deal(default_isi);
+            end
+
+	        samp_pulses = [];
+            if ~isempty(annot_pulses)
+                samp_pulses = annot_pulses(idx_pulses,1);
+                val_pulses = annot_pulses(idx_pulses,2);
+                
+                stim_pulses = cell(size(stim_locs,1),1);
+                [stim_pulses{:}] = deal(default_pulses);
+                
+                for n=1:size(samp_pulses,1)
+                    if n<size(samp_pulses,1)
+                        idx_stim_pulses = locs>samp_pulses(n)& locs<samp_pulses(n+1) ;
+                        [stim_pulses{idx_stim_pulses}] = deal(val_pulses(n));
+                    else
+                        idx_stim_pulses = locs>samp_pulses(n);
+                        [stim_pulses{idx_stim_pulses}] = deal(val_pulses(n));
+                    end
+                end
+                
+            else
+                idx_stim_pulses = true(1,size(stim_locs,1));
+                stim_pulses = cell(size(stim_locs,1),1);
+                [stim_pulses{idx_stim_pulses}] = deal(default_pulses);
+            end            
+        end
         
         %% duration of stimulation (if spes than, duration is pulsdur, when it its ESM, than 50Hz can have a pulse duration of 200 usec, but a total duration of stimulation that is about 5sec)
-        
+        % aanpassen! check of het goed gaat bereken aan hand van isi        
         if any(idx_trigger)
             stim_duration = cell(size(stim_locs,1),1);
             stim_duration{1} = (trigger.pos(idx_trigger)-stim_start)/header.Rate_Min; % in seconds
+        elseif evname == "SPESpaired" && stim_pulses{1}>1 % SPES-IN paired pulse study
+            stim_duration = cell(size(stim_locs,1),1);
+            [stim_duration{:}] = deal(stim_isi{1}*(stim_pulses{1}-1)+stim_pulsewidth{1});
         else
             stim_duration = cell(size(stim_locs,1),1);
             [stim_duration{:}] = deal(stim_pulsewidth{1});
         end
         
+            
         %% offset of stimulation
         
         % in seconds
@@ -387,8 +459,8 @@ for stim = 1:size(metadata.stimulation,1)
         stimannots(stim).freq{i} = stim_freq; %#ok<AGROW>
         stimannots(stim).ch_name_on{i} = stim_ch_name_on; %#ok<AGROW>
         stimannots(stim).ch_name_off{i} = stim_ch_name_off; %#ok<AGROW>
-        % stimannots(stim).hekjep{i} = stim_hekjep; %#ok<AGROW>
-        % stimannots(stim).isi{i} = stim_isi; %#ok<AGROW>
+        stimannots(stim).pulses{i} = stim_pulses; %#ok<AGROW>
+        stimannots(stim).isi{i} = stim_isi; %#ok<AGROW>
         % 
     end
 end
@@ -408,8 +480,8 @@ notes = horzcat(stimannots(:).notes);
 freq = horzcat(stimannots(:).freq);
 ch_name_on = horzcat(stimannots(:).ch_name_on);
 ch_name_off = horzcat(stimannots(:).ch_name_off);
-% hekjep = horzcat(stimannots(:).hekjep);
-% isi = horzcat(stimannots(:).hekjep);
+pulses = horzcat(stimannots(:).pulses);
+isi = horzcat(stimannots(:).isi);
 
 
 eventsannots.type = vertcat(vertcat(eventsannots.type(:)), vertcat(type{:}));
@@ -427,8 +499,8 @@ eventsannots.notes = vertcat(vertcat(eventsannots.notes(:)), vertcat(notes{:}));
 eventsannots.freq = vertcat(vertcat(eventsannots.freq(:)), vertcat(freq{:}));
 eventsannots.ch_name_on = vertcat(vertcat(eventsannots.ch_name_on(:)), vertcat(ch_name_on{:}));
 eventsannots.ch_name_off = vertcat(vertcat(eventsannots.ch_name_off(:)), vertcat(ch_name_off{:}));
-% eventsannots.hekjep = vertcat(vertcat(eventsannots.hekjep(:)), vertcat(hekjep{:}));
-% eventsannots.isi = vertcat(vertcat(eventsannots.isi(:)), vertcat(isi{:}));
+eventsannots.pulses = vertcat(vertcat(eventsannots.pulses(:)), vertcat(pulses{:}));
+eventsannots.isi = vertcat(vertcat(eventsannots.isi(:)), vertcat(isi{:}));
 
 
 end
