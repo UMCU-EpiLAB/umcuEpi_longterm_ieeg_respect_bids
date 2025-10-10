@@ -158,7 +158,16 @@ else
     mkdir(cfg(1).surface_directory)
 end
 
+files = ["rh.white.K";"lh.white.K"
+lh.white.H
+rh.white.H
+lh.fsaverage.sphere.reg
+rh.fsaverage.sphere.reg
+lh.pial
+rh.pial
 % start Linux terminal.
+fprintf('\n ----- RUN LINE BELOW IN LINUX TERMINAL ----- \n cp -L /home/epilab/Desktop/%s/surf/%sh.pial %ssurf',cfg(1).sub_label,cfg(1).hemisphere{i},cfg(1).freesurfer_directory_linux)
+
 % Copy the printed lines in the command window into the linux terminal:
 for i=1:size(cfg(1).hemisphere,2)
     fprintf('\n ----- RUN LINE BELOW IN LINUX TERMINAL ----- \n cp -L /home/epilab/Desktop/%s/surf/%sh.pial %ssurf \n ----- RUN LINE BELOW IN LINUX TERMINAL ----- \n cd %ssurf \n ----- RUN LINE BELOW IN LINUX TERMINAL -----  \n mris_convert %sh.pial %sh.pial.gii\n',cfg(1).sub_label,cfg(1).hemisphere{i},cfg(1).freesurfer_directory_linux,cfg(1).freesurfer_directory_linux,cfg(1).hemisphere{i},cfg(1).hemisphere{i})
