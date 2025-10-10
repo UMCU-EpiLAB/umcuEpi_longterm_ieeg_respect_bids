@@ -236,8 +236,6 @@ clear ctname ctpathname mriname t1name
 % read coordinates from XML files
 %assumes that XML files are in the same folder as MRI gado
 xmlpathname = t1pathname; %[mripathname 'elektroden_brainlab\']; when xml files are in another folder
-%TEMPORARY REMOVE BEFORE PUSH
-xmlpathname = 'L:\her_knf_golf\Wetenschap\newtransport\ThomasMartens\elecpos_pt\Eijlers_5337852\';
 list = dir([xmlpathname '*.xmlSE']); % mripathname when xml files are in the same folder
 [tmp, ind]=sort_nat({list.name});
 list=list(ind);
