@@ -150,7 +150,7 @@ fprintf('\n ----- RUN LINE BELOW IN LINUX TERMINAL ----- \n cp -r -P %s%s/  %s\n
 % electrodes
 % run this part in matlab with 'ctrl enter', this will show the text to copy in the terminal 
 clc
-
+fprinf('manual one folder up')
 % Make surface folder
 if exist(cfg(1).surface_directory, 'dir')
     %     fprintf('%s exists already\n',cfg(1).surface_directory)
@@ -158,20 +158,25 @@ else
     mkdir(cfg(1).surface_directory)
 end
 
-files = ["rh.white.K";"lh.white.K"
-lh.white.H
-rh.white.H
-lh.fsaverage.sphere.reg
-rh.fsaverage.sphere.reg
-lh.pial
-rh.pial
+files = ["rh.white.K";"lh.white.K";"lh.white.H";"rh.white.H";"lh.fsaverage.sphere.reg";"rh.fsaverage.sphere.reg";"lh.pial";"rh.pial"];
+
 % start Linux terminal.
-fprintf('\n ----- RUN LINE BELOW IN LINUX TERMINAL ----- \n cp -L /home/epilab/Desktop/%s/surf/%sh.pial %ssurf',cfg(1).sub_label,cfg(1).hemisphere{i},cfg(1).freesurfer_directory_linux)
+% copy the other files maybe someday needed
+fprintf('\n ----- RUN LINE BELOW IN LINUX TERMINAL ----- \n')
+for j = 1:size(files,1)
+fprintf('cp -L /home/epilab/Desktop/%s/surf/%s %ssurf \n',cfg(1).sub_label,files(j),cfg(1).freesurfer_directory_linux)
+end
 
 % Copy the printed lines in the command window into the linux terminal:
 for i=1:size(cfg(1).hemisphere,2)
-    fprintf('\n ----- RUN LINE BELOW IN LINUX TERMINAL ----- \n cp -L /home/epilab/Desktop/%s/surf/%sh.pial %ssurf \n ----- RUN LINE BELOW IN LINUX TERMINAL ----- \n cd %ssurf \n ----- RUN LINE BELOW IN LINUX TERMINAL -----  \n mris_convert %sh.pial %sh.pial.gii\n',cfg(1).sub_label,cfg(1).hemisphere{i},cfg(1).freesurfer_directory_linux,cfg(1).freesurfer_directory_linux,cfg(1).hemisphere{i},cfg(1).hemisphere{i})
+    fprintf(' \n ----- RUN LINE BELOW IN LINUX TERMINAL ----- \n cd %ssurf \n ----- RUN LINE BELOW IN LINUX TERMINAL -----  \n mris_convert %sh.pial %sh.pial.gii\n',cfg(1).freesurfer_directory_linux,cfg(1).hemisphere{i},cfg(1).hemisphere{i})
 end
+
+
+% % Copy the printed lines in the command window into the linux terminal:
+% for i=1:size(cfg(1).hemisphere,2)
+%     fprintf('\n ----- RUN LINE BELOW IN LINUX TERMINAL ----- \n cp -L /home/epilab/Desktop/%s/surf/%sh.pial %ssurf \n ----- RUN LINE BELOW IN LINUX TERMINAL ----- \n cd %ssurf \n ----- RUN LINE BELOW IN LINUX TERMINAL -----  \n mris_convert %sh.pial %sh.pial.gii\n',cfg(1).sub_label,cfg(1).hemisphere{i},cfg(1).freesurfer_directory_linux,cfg(1).freesurfer_directory_linux,cfg(1).hemisphere{i},cfg(1).hemisphere{i})
+% end
 
 
 %% STEP 6: generate surface (The Hull) to project electrodes to - RUN IN LINUX TERMINAL
@@ -187,7 +192,7 @@ clc
 % Right click in the freesurfer/mri-folder and start Linux terminal.
 
 % Copy the printed lines in the command window into the linux terminal:
-fprintf('\n ----- OPEN %smri ----- \n ----- CLICK WITH RIGHT MOUSE AND OPEN LINUX TERMINAL ----- \n ----- RUN LINE BELOW IN LINUX TERMINAL ----- \nmri_convert ribbon.mgz t1_class.nii\n',cfg(1).freesurfer_directory_linux)
+fprintf('\n ----- OPEN cd %smri ----- \n ----- CLICK WITH RIGHT MOUSE AND OPEN LINUX TERMINAL ----- \n ----- RUN LINE BELOW IN LINUX TERMINAL ----- \nmri_convert ribbon.mgz t1_class.nii\n',cfg(1).freesurfer_directory_linux)
 
 
 %% STEP 7: Create the hull - matlab

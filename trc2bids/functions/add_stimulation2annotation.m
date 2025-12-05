@@ -25,8 +25,10 @@ for stim = 1:size(metadata.stimulation,1)
     annot_freq = div_annots.annot_freq;
     annot_curr = div_annots.annot_curr;
     annot_note = div_annots.annot_note;
+    if evname == "SPESpaired" % SPES-IN paired pulse study
     annot_pulses = div_annots.annot_pulses;
     annot_isi = div_annots.annot_isi;
+    end
 
     
     %% default stimulation parameters
@@ -344,11 +346,16 @@ for stim = 1:size(metadata.stimulation,1)
         if any(idx_trigger)
             stim_duration = cell(size(stim_locs,1),1);
             stim_duration{1} = (trigger.pos(idx_trigger)-stim_start)/header.Rate_Min; % in seconds
-        elseif evname == "SPESpaired" && stim_pulses{1}>1 % SPES-IN paired pulse study
+        elseif evname == "SPESpaired" 
+            if stim_pulses{1}>1 % SPES-IN paired pulse study
             stim_duration = cell(size(stim_locs,1),1);
             [stim_duration{:}] = deal(stim_isi{1}*(stim_pulses{1}-1)+stim_pulsewidth{1});
-        else
-            stim_duration = cell(size(stim_locs,1),1);
+            else % same as else below (356-357)
+            stim_duration = cell(size(stim_locs,1),1); 
+            [stim_duration{:}] = deal(stim_pulsewidth{1}); 
+            end
+        else % same as else above (352-353)
+            stim_duration = cell(size(stim_locs,1),1); 
             [stim_duration{:}] = deal(stim_pulsewidth{1});
         end
         
@@ -459,8 +466,10 @@ for stim = 1:size(metadata.stimulation,1)
         stimannots(stim).freq{i} = stim_freq; %#ok<AGROW>
         stimannots(stim).ch_name_on{i} = stim_ch_name_on; %#ok<AGROW>
         stimannots(stim).ch_name_off{i} = stim_ch_name_off; %#ok<AGROW>
-        stimannots(stim).pulses{i} = stim_pulses; %#ok<AGROW>
-        stimannots(stim).isi{i} = stim_isi; %#ok<AGROW>
+        if evname == "SPESpaired"
+            stimannots(stim).pulses{i} = stim_pulses; %#ok<AGROW>
+            stimannots(stim).isi{i} = stim_isi; %#ok<AGROW>
+        end
         % 
     end
 end
@@ -480,9 +489,10 @@ notes = horzcat(stimannots(:).notes);
 freq = horzcat(stimannots(:).freq);
 ch_name_on = horzcat(stimannots(:).ch_name_on);
 ch_name_off = horzcat(stimannots(:).ch_name_off);
+if evname == "SPESpaired"
 pulses = horzcat(stimannots(:).pulses);
 isi = horzcat(stimannots(:).isi);
-
+end
 
 eventsannots.type = vertcat(vertcat(eventsannots.type(:)), vertcat(type{:}));
 eventsannots.sub_type = vertcat(vertcat(eventsannots.sub_type(:)), vertcat(sub_type{:}));
@@ -499,9 +509,11 @@ eventsannots.notes = vertcat(vertcat(eventsannots.notes(:)), vertcat(notes{:}));
 eventsannots.freq = vertcat(vertcat(eventsannots.freq(:)), vertcat(freq{:}));
 eventsannots.ch_name_on = vertcat(vertcat(eventsannots.ch_name_on(:)), vertcat(ch_name_on{:}));
 eventsannots.ch_name_off = vertcat(vertcat(eventsannots.ch_name_off(:)), vertcat(ch_name_off{:}));
+
+if evname == "SPESpaired"
 eventsannots.pulses = vertcat(vertcat(eventsannots.pulses(:)), vertcat(pulses{:}));
 eventsannots.isi = vertcat(vertcat(eventsannots.isi(:)), vertcat(isi{:}));
-
+end
 
 end
 

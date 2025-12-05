@@ -6,6 +6,7 @@ function annotation_tsv = write_annotations_tsv(cfg,metadata,header,annots,feven
 % ch_label  = metadata.ch_label;
 % ch2use_included = metadata.ch2use_included;
 % fs = header.Rate_Min;
+evname = metadata.task_name;
 
 eventsannots = struct();
 eventsannots.type        = {};
@@ -84,9 +85,10 @@ if isempty(eventsannots.s_start)
     notes           = "n/a";
     freq            = "n/a";
     pulsewidth      = "n/a";
+    if evname == "SPESpaired" % SPES-IN paired pulse study
     pulses          = "n/a";
     isi             = "n/a";
-
+    end
 else
     s_start         = eventsannots.s_start;
     s_end           = eventsannots.s_end;
@@ -103,14 +105,21 @@ else
     notes           = eventsannots.notes;
     freq            = eventsannots.freq;
     pulsewidth      = eventsannots.pulsewidth;
+    if evname == "SPESpaired" % SPES-IN paired pulse study
     pulses          = eventsannots.pulses;
     isi             = eventsannots.isi;
+    end
 end
 
 % make table
-annotation_tsv  = table(s_start,duration, type, sub_type, ch_name_on, ch_name_off,s_end, samp_start, samp_end, stim_type, site_name, stim_cur, freq, pulsewidth, pulses, isi, notes, ...
-    'VariableNames',{'onset', 'duration','trial_type', 'sub_type','electrodes_involved_onset','electrodes_involved_offset','offset','sample_start','sample_end','electrical_stimulation_type','electrical_stimulation_site','electrical_stimulation_current','electrical_stimulation_frequency','electrical_stimulation_pulsewidth','nr_of_pulses', 'interstimulus_interval','notes' });
 
+annotation_tsv  = table(s_start,duration, type, sub_type, ch_name_on, ch_name_off,s_end, samp_start, samp_end, stim_type, site_name, stim_cur, freq, pulsewidth, notes, ...
+    'VariableNames',{'onset', 'duration','trial_type', 'sub_type','electrodes_involved_onset','electrodes_involved_offset','offset','sample_start','sample_end','electrical_stimulation_type','electrical_stimulation_site','electrical_stimulation_current','electrical_stimulation_frequency','electrical_stimulation_pulsewidth','notes' });
+if evname == "SPESpaired" % SPES-IN paired pulse study
+    annotation_tsv.('nr_of_pulses') = pulses;
+    annotation_tsv.('interstimulus_interval') = isi;
+end
+   
 %% write table
 if ~isempty(annotation_tsv)
     for i=1:size(cfg(1).ieeg_dir,2)
