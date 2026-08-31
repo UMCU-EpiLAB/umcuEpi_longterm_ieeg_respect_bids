@@ -375,29 +375,38 @@ for stim = 1:size(metadata.stimulation,1)
 
         %% evoked responses (TRENI)
         stim_evoke = cell(size(stim_locs,1),1);
-        [stim_evoke{:}] = deal("n/a");
+        [stim_evoke{:}] = deal('n/a');
         
-        if strcmpi(evname,'TRENI') && ~isempty(annot_evoke) && any(idx_evoke) % for TRENI, change for CHOCS1/2
+        if strcmpi(evname,'TRENI') && ~isempty(annot_evoke) && any(idx_evoke)
         
             samp_evoke = vertcat(annot_evoke{idx_evoke,1});
             val_evoke  = annot_evoke(idx_evoke,2);
 
-            % find all evoked annotations that occur after stim onset
+        % find all evoked annotations that occur after stim onset
+        for k = 1:numel(samp_evoke)
+            if k < numer(stim_locs)
+                if samp_evoke(n) >= stim_l
+            allsamps = samp_evoke;
+            sampstart = [stim_start; allsamps(allsamps > locs(1))];
+        
             for k = 1:numel(stim_locs)
-                if k < numel(stim_locs)
-                    stim_window = [stim_locs{k}, stim_locs{k+1}-1];
-                else
-                    stim_window = [stim_locs{k}, Inf];
+                evk={};
+                for n=1:numel(samp_evoke)
+                    dif_start = samp_evoke(n) - sampstart;
+                    idx_sampstart = dif_start == min(dif_start(dif_start > 0));
+
+                    if locs(k) > sampstart(idx_sampstart) && locs(k) < samp_evoke(n)
+                        evk{end+1} = val_evoke{n}; %#ok<AGROW>
+
+                    end 
                 end
 
-                idx_in_window = samp_evoke >= stim_window(1) & samp_evoke < stim_window(2);
-
-                if any(idx_in_window)
-                    stim_evoke{k} = string(strjoin(unique(val_evoke(idx_in_window), 'stable'), ','));
+                if ~isempty(evk)
+                stim_evoke{k} = strjoin(unique(evk,'stable'), ',');
                 end
             end
         end
-
+        
         %% involved channels
         stim_ch_name_on = cell(size(stim_locs,1),1);
         [stim_ch_name_on{:}] = deal('n/a');
