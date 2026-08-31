@@ -83,10 +83,9 @@ if size(files,1) <1
 else
     fileinput = input(sprintf(['Select one of these files [',string,']: \n'],eegfiles{:}),'s');
 end
-
 cfg(1).filename = [cfg(1).pathname,fileinput];
 
-pathsplit = strsplit(cfg(1).pathname,{'\'}); 
+pathsplit = strsplit(cfg(1).pathname,{'\'});
 patient = pathsplit{end-1};
 filesplit = strsplit(fileinput,{'_','.TRC'});
 file = filesplit{end-1};
